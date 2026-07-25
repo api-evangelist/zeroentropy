@@ -1,0 +1,849 @@
+openapi: 3.1.0
+info:
+  title: ZeroEntropy Admin Documents API
+  description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
+  version: 0.1.0
+servers:
+- url: https://api.zeroentropy.dev/v1
+  description: ZeroEntropy API
+- url: https://eu-api.zeroentropy.dev/v1
+  description: ZeroEntropy API (EU datacenters)
+tags:
+- name: Documents
+paths:
+  /documents/add-document:
+    post:
+      tags:
+      - Documents
+      summary: Add Document
+      description: 'Adds a document to a given collection.
+
+
+        A status code of `201 Created` will be returned if a document was successfully added. A status code of `409 Conflict` will be returned if the given collection already has a document with the same path.
+
+
+        If `overwrite` is given a value of `true`, then a status code of `200 OK` will be returned if a document was overwritten (Rather than a status code of `409 Conflict`).
+
+
+        When a document is inserted, it can take time to appear in the index. Check the `/status/get-status` endpoint to see progress.'
+      operationId: add_document_documents_add_document_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDocumentRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /documents/update-document:
+    post:
+      tags:
+      - Documents
+      summary: Update Document
+      description: 'Updates a document. This endpoint is atomic.
+
+
+        Currently both `metadata` and `index_status` are supported.
+
+
+        - When updating with a non-null `metadata`, the document must have `index_status` of `indexed`. After this call, the document will have an `index_status` of `not_indexed`, since the document will need to reindex with the new metadata.
+
+        - When updating with a non-null `index_status`, setting it to `not_parsed` or `not_indexed` requires that the document must have `index_status` of `parsing_failed` or `indexing_failed`, respectively.
+
+
+        A `404 Not Found` status code will be returned, if the provided collection name or document path does not exist.'
+      operationId: update_document_documents_update_document_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDocumentRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /documents/get-document-info:
+    post:
+      tags:
+      - Documents
+      summary: Get Document Info
+      description: 'Retrieves information about a specific document. The request parameters define what information you would like to receive.
+
+
+        A `404 Not Found` will be returned if either the collection name does not exist, or the document path does not exist within the provided collection.'
+      operationId: get_document_info_documents_get_document_info_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetDocumentInfoRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocumentInfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /documents/get-document-info-list:
+    post:
+      tags:
+      - Documents
+      summary: Get Document Info List
+      description: 'Retrives a list of document metadata information that matches the provided filters.
+
+
+        The documents returned will be sorted by path in lexicographically ascending order. `path_gt` can be used for pagination, and should be set to the path of the last document returned in the previous call.
+
+
+        A `404 Not Found` will be returned if either the collection name does not exist, or the document path does not exist within the provided collection.'
+      operationId: get_document_info_list_documents_get_document_info_list_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetDocumentInfoListRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocumentInfoListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /documents/delete-document:
+    post:
+      tags:
+      - Documents
+      summary: Delete Document
+      description: 'Deletes a document
+
+
+        A `404 Not Found` status code will be returned, if the provided collection name or document path does not exist.'
+      operationId: delete_document_documents_delete_document_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteDocumentRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteDocumentResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /documents/get-page-info:
+    post:
+      tags:
+      - Documents
+      summary: Get Page Info
+      description: 'Retrieves information about a specific page. The request parameters define what information you would like to receive.
+
+
+        A `404 Not Found` will be returned if either the collection name does not exist, or the document path does not exist within the provided collection.'
+      operationId: get_page_info_documents_get_page_info_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetPageInfoRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPageInfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /documents/get-document:
+    get:
+      tags:
+      - Documents
+      summary: Get Document
+      description: 'Get the document. The content will be the binary PDF/DOCX content, or be UTF-8-encoded content if it is text.
+
+
+        A `404 Not Found` status code will be returned, if the provided request parameters do not exist.
+
+
+        Note that if `/documents/update-document` returns a new document id, then all urls will be invalidated and must be retrieved again.
+
+
+        The HTTP cache policy on this endpoint is set to never expire, unlike other endpoints whose HTTP headers assert no-cache.'
+      operationId: get_document_documents_get_document_get
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+          description: The document token
+          title: Token
+        description: The document token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-hidden: true
+  /documents/get-page-image:
+    get:
+      tags:
+      - Documents
+      summary: Get Page Image
+      description: 'Get the image for a specific page. The image will be returned as a JPEG.
+
+
+        This endpoint is meant to be used with `<img>` tags in the frontend. A `404 Not Found` status code will be returned, if the provided request parameters do not exist or if the page exists but does not have an associated image.
+
+
+        Note that if `/documents/update-document` returns a new document id, then all urls will be invalidated and must be retrieved again.
+
+
+        The HTTP cache policy on this endpoint is set to never expire, unlike other endpoints whose HTTP headers assert no-cache.'
+      operationId: get_page_image_documents_get_page_image_get
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+          description: The image token
+          title: Token
+        description: The image token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      x-hidden: true
+components:
+  schemas:
+    GetPageInfoResponse:
+      properties:
+        page:
+          $ref: '#/components/schemas/PageResponse'
+      type: object
+      required:
+      - page
+      title: GetPageInfoResponse
+    DocumentIndexStatus:
+      type: string
+      enum:
+      - not_parsed
+      - parsing
+      - not_indexed
+      - indexing
+      - indexed
+      - parsing_failed
+      - indexing_failed
+      title: DocumentIndexStatus
+    PageResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document associated with this page.
+        page_index:
+          type: integer
+          title: Page Index
+          description: The specific page index of this page. Pages are 0-indexed, so that the 1st page of a PDF is of page index 0.
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: The content of the page. This field will only be provided if `include_content` was set to `true`, and the document has finished parsing. Otherwise, this field will be set to `null`.
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+          description: 'A URL to an image of the page. This field will only be provided if the document has finished parsing, and if it is a filetype that is capable of producing images (e.g. PDF, DOCX, PPT, etc). In all other cases, this field will be `null`.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+      type: object
+      required:
+      - id
+      - collection_name
+      - path
+      - page_index
+      - image_url
+      title: PageResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DocumentMetadataResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        collection_name:
+          type: string
+          title: Collection Name
+        path:
+          type: string
+          title: Path
+        metadata:
+          $ref: '#/components/schemas/DocumentMetadataJson'
+        index_status:
+          $ref: '#/components/schemas/DocumentIndexStatus'
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        size:
+          type: integer
+          title: Size
+          description: The total size of the raw document data, in bytes.
+        num_pages:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Num Pages
+          description: The number of pages in this document. This will be `null` if the document is parsing or failed to parse. It can also be `null` if the document is a filetype that does not support pages.
+        file_url:
+          type: string
+          title: File Url
+          description: 'A URL to the document data, which can be used to download the raw document content or to display the document in frontend applications.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+      type: object
+      required:
+      - id
+      - collection_name
+      - path
+      - metadata
+      - index_status
+      - created_at
+      - size
+      - num_pages
+      - file_url
+      title: DocumentMetadataResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AddDocumentRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection to be used for this request. A `404 Not Found` status code will be returned if this collection name does not exist.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document that you are adding. A `409 Conflict` status code will be returned if this path already exists, unless `overwrite` is set to `true`.
+        content:
+          oneOf:
+          - $ref: '#/components/schemas/APITextDocument'
+          - $ref: '#/components/schemas/APITextPagesDocument'
+          - $ref: '#/components/schemas/APIBinaryDocument'
+          title: Content
+          description: 'The content of the document. There are three possible JSON types that can be passed into this parameter: `APITextDocument`, `APITextPagesDocument`, `APIBinaryDocument`. The `type` field is how ZeroEntropy will know which document object you have passed in.'
+          discriminator:
+            propertyName: type
+            mapping:
+              auto: '#/components/schemas/APIBinaryDocument'
+              text: '#/components/schemas/APITextDocument'
+              text-pages: '#/components/schemas/APITextPagesDocument'
+              text-pages-unordered: '#/components/schemas/APITextPagesDocument'
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/DocumentMetadataJson'
+          description: 'This is a metadata JSON object that can be used to assign various metadata attributes to your document. The provided object must match the type `dict[str, str | list[str]]`. Please read [Metadata Filtering](/metadata-filtering) for more details. By default, the metadata will be set to `{}`.
+
+
+            NOTE: The UTF-8-encoded JSON string must be less than 65536 bytes (Whitespace does not count). This limit can be increased upon request.'
+          default: {}
+        overwrite:
+          type: boolean
+          title: Overwrite
+          description: 'Setting this property to true will put this endpoint in "upsert" mode: If the document already exists, this action will atomically replace it.'
+          default: false
+      type: object
+      required:
+      - collection_name
+      - path
+      - content
+      title: AddDocumentRequest
+    DocumentMetadataJson:
+      additionalProperties:
+        anyOf:
+        - type: string
+        - items:
+            type: string
+          type: array
+      type: object
+    GetDocumentInfoListRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        limit:
+          type: integer
+          title: Limit
+          description: The maximum number of documents to return. This field is by default 1024, and cannot be set larger than 1024
+          default: 1024
+        path_prefix:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Path Prefix
+          description: All documents returned will have a path that starts with the provided path prefix.
+        path_gt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Path Gt
+          description: All documents returned will have a path strictly greater than the provided `path_gt` argument. (Comparison will be based on lexicographic comparison. It is guaranteed that two strings are lexicographically equal if and only if they have identical binary representations.).
+      type: object
+      required:
+      - collection_name
+      title: GetDocumentInfoListRequest
+    GetDocumentInfoRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document that you're requesting. A `404 Not Found` status code will be returned if no document with this path was found.
+        include_content:
+          type: boolean
+          title: Include Content
+          description: If `true`, then the document response will have the `content` attribute be a `string`, rather than `null`. This string will contain the full contents of the document.
+          default: false
+      type: object
+      required:
+      - collection_name
+      - path
+      title: GetDocumentInfoRequest
+    DocumentResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        collection_name:
+          type: string
+          title: Collection Name
+        path:
+          type: string
+          title: Path
+        metadata:
+          $ref: '#/components/schemas/DocumentMetadataJson'
+        index_status:
+          $ref: '#/components/schemas/DocumentIndexStatus'
+        size:
+          type: integer
+          title: Size
+          description: The total size of the raw document data, in bytes.
+        num_pages:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Num Pages
+          description: The number of pages in this document. This will be `null` if the document is parsing or failed to parse. It can also be `null` if the document is a filetype that does not support pages.
+        file_url:
+          type: string
+          title: File Url
+          description: 'A URL to the document data, which can be used to download the raw document content or to display the document in frontend applications.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: This will be `null`, unless `include_content` was available and set to `true`.
+      type: object
+      required:
+      - id
+      - collection_name
+      - path
+      - metadata
+      - index_status
+      - size
+      - num_pages
+      - file_url
+      title: DocumentResponse
+    DefaultResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: This string will always be "Success!". This may change in the future.
+          default: Success!
+      type: object
+      title: DefaultResponse
+    GetDocumentInfoListResponse:
+      properties:
+        documents:
+          items:
+            $ref: '#/components/schemas/DocumentMetadataResponse'
+          type: array
+          title: Documents
+      type: object
+      required:
+      - documents
+      title: GetDocumentInfoListResponse
+    UpdateDocumentRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document that you are updating. A `404 Not Found` status code will be returned if no document with this path was found.
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/DocumentMetadataJson'
+          - type: 'null'
+          description: If this field is provided, the given metadata json will replace the document's existing metadata json. In other words, if you want to add a new field, you will need to provide the entire metadata object (Both the original fields, and the new field).
+        index_status:
+          anyOf:
+          - type: string
+            enum:
+            - not_parsed
+            - not_indexed
+          - type: 'null'
+          title: Index Status
+          description: If the document is in the index_status of `parsing_failed or `indexing_failed`, then this endpoint allows you to update the index status to `not_parsed` and `not_indexed`, respectively. This allows the document to re-attempt to parse/index after failure.
+      type: object
+      required:
+      - collection_name
+      - path
+      title: UpdateDocumentRequest
+    APIBinaryDocument:
+      properties:
+        type:
+          type: string
+          enum:
+          - auto
+          const: auto
+          title: Type
+          description: When this is set to `auto`, then the file extension and binary data will be used to deduce a filetype automatically. Currently, only `auto` is supported.
+        base64_data:
+          type: string
+          title: Base64 Data
+          description: The file's raw data, as a base64-encoded string
+      type: object
+      required:
+      - type
+      - base64_data
+      title: APIBinaryDocument
+    APITextDocument:
+      properties:
+        type:
+          type: string
+          enum:
+          - text
+          const: text
+          title: Type
+          description: This field must be `text`
+        text:
+          type: string
+          title: Text
+          description: The content of this document, as a text string
+      type: object
+      required:
+      - type
+      - text
+      title: APITextDocument
+    DeleteDocumentRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          anyOf:
+          - type: string
+          - items:
+              type: string
+            type: array
+          title: Path
+          description: The path(s) of the document(s) that you are deleting. Must be either a `string`, or a `list[str]` between 1 and 64 inclusive. A `404 Not Found` status code will be returned if no document(s) with this path was found. If at least one of the paths provided do exist, then `200 OK` will be returned, along with an array of the document paths that were found and thus deleted.
+      type: object
+      required:
+      - collection_name
+      - path
+      title: DeleteDocumentRequest
+    GetPageInfoRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document whose page you are requesting. A `404 Not Found` status code will be returned if no document with this path was found.
+        page_index:
+          type: integer
+          title: Page Index
+          description: 'The specific page index whose info is being requested. Pages are 0-indexed, so that the 1st page of a PDF is of page index 0. You may use the `num_pages` attribute of `/documents/get-document-info` or `/documents/get-document-info-list` to know what the range of valid indices are. A `404 Not Found` status code will be returned if no such page index exists. '
+        include_content:
+          type: boolean
+          title: Include Content
+          description: If `true`, then the response will have the `content` attribute be a `string`, rather than `null`. This string will contain the full contents of the page.
+          default: false
+      type: object
+      required:
+      - collection_name
+      - path
+      - page_index
+      title: GetPageInfoRequest
+    GetDocumentInfoResponse:
+      properties:
+        document:
+          $ref: '#/components/schemas/DocumentResponse'
+      type: object
+      required:
+      - document
+      title: GetDocumentInfoResponse
+    DeleteDocumentResponse:
+      properties:
+        deleted_paths:
+          items:
+            type: string
+          type: array
+          title: Deleted Paths
+      type: object
+      required:
+      - deleted_paths
+      title: DeleteDocumentResponse
+    APITextPagesDocument:
+      properties:
+        type:
+          type: string
+          enum:
+          - text-pages
+          - text-pages-unordered
+          title: Type
+          description: This field must be `text-pages` or `text-pages-unordered`. When `unordered` is provided, it is assumed that consecutive pages aren't meant to be read one after another. For example, PDFs are ordered, and CSVs are unordered.
+        pages:
+          items:
+            type: string
+          type: array
+          title: Pages
+          description: The content of this document, as an array of strings. Each string will be the content of a full page, and can be retrieved using the Top Pages endpoint. Pages are 0-indexed, so that the first string has index 0, the second string has index 1.
+      type: object
+      required:
+      - type
+      - pages
+      title: APITextPagesDocument
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: 'The `Authorization` header must be provided in the format `Bearer <your-api-key>`.
+
+
+        You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!'
+      scheme: bearer

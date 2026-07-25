@@ -1,0 +1,137 @@
+openapi: 3.1.0
+info:
+  title: ZeroEntropy Admin Status API
+  description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
+  version: 0.1.0
+servers:
+- url: https://api.zeroentropy.dev/v1
+  description: ZeroEntropy API
+- url: https://eu-api.zeroentropy.dev/v1
+  description: ZeroEntropy API (EU datacenters)
+tags:
+- name: Status
+paths:
+  /status/get-status:
+    post:
+      tags:
+      - Status
+      summary: Get Status
+      description: 'Gets the current indexing status across all documents.
+
+
+        If a collection name is passed in, it will get the indexing status of only the documents within that collection. Otherwise, it will show the cumulative status across all of your collections.
+
+
+        A `404 Not Found` status code will be returned, if a collection name was provided, but it does not exist.'
+      operationId: get_status_status_get_status_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+components:
+  schemas:
+    StatusRequest:
+      properties:
+        collection_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Collection Name
+          description: The collection name to use. If `collection_name` is `null` or omitted, then the cumulative status across all collections will be shown.
+      type: object
+      title: StatusRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    StatusResponse:
+      properties:
+        num_documents:
+          type: integer
+          title: Num Documents
+          description: The total number of documents, regardless of their status. It is guaranteed that the sum of all of the other fields, is this number.
+        num_parsing_documents:
+          type: integer
+          title: Num Parsing Documents
+          description: The number of documents that are being parsed. This refers files of the type PDF, DOCX, PPT, etc, whose images are being processed, or are waiting to be processed, by our OCR system.
+        num_indexing_documents:
+          type: integer
+          title: Num Indexing Documents
+          description: The number of documents being indexed. Indexing occurs only after the document has finished parsing.
+        num_indexed_documents:
+          type: integer
+          title: Num Indexed Documents
+          description: The number of documents that are currently indexed.
+        num_failed_documents:
+          type: integer
+          title: Num Failed Documents
+          description: The number of failed documents. Failures can occur during either parsing, or indexing. It can occur if the file is malformed or incomplete. If you believe that the file is formatted correctly, please contact us at `founders@zeroentropy.dev` to assist.
+        num_indexed_bytes:
+          type: integer
+          title: Num Indexed Bytes
+          description: The total number of bytes used by documents that are currently indexed. Measured as UTF-8 bytes. For PDF/DOCX/PPT/etc, this is of the OCR'ed text.
+      type: object
+      required:
+      - num_documents
+      - num_parsing_documents
+      - num_indexing_documents
+      - num_indexed_documents
+      - num_failed_documents
+      - num_indexed_bytes
+      title: StatusResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: 'The `Authorization` header must be provided in the format `Bearer <your-api-key>`.
+
+
+        You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!'
+      scheme: bearer

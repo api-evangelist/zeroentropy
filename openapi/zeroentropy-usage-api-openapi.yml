@@ -1,0 +1,615 @@
+openapi: 3.1.0
+info:
+  title: ZeroEntropy Admin Usage API
+  description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
+  version: 0.1.0
+servers:
+- url: https://api.zeroentropy.dev/v1
+  description: ZeroEntropy API
+- url: https://eu-api.zeroentropy.dev/v1
+  description: ZeroEntropy API (EU datacenters)
+tags:
+- name: Usage
+paths:
+  /usage/documents:
+    post:
+      tags:
+      - Usage
+      summary: Get Document Usage
+      description: Document usage analytics (added/deleted/parsed/indexed events).
+      operationId: get_document_usage_usage_documents_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DocumentUsageResponse'
+                type: array
+                title: Response Get Document Usage Usage Documents Post
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /usage/queries:
+    post:
+      tags:
+      - Usage
+      summary: Get Query Usage
+      description: Query usage (fine/coarse/pages/documents queries).
+      operationId: get_query_usage_usage_queries_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/QueryUsageResponse'
+                type: array
+                title: Response Get Query Usage Usage Queries Post
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /usage/models/reranker:
+    post:
+      tags:
+      - Usage
+      summary: Get Models Reranker Usage
+      description: 'Get reranker usage analytics with model breakdown.
+
+
+        Note: Rerank events don''t have collection_id, so collection filtering is not supported.
+
+        If collection_names are provided in the request, they will be ignored.'
+      operationId: get_models_reranker_usage_usage_models_reranker_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RerankUsageResponse'
+                type: array
+                title: Response Get Models Reranker Usage Usage Models Reranker Post
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /usage/models/embed:
+    post:
+      tags:
+      - Usage
+      summary: Get Models Embed Usage
+      description: 'Get embedding usage analytics with model breakdown.
+
+
+        Note: Embed events don''t have collection_id, so collection filtering is not supported.
+
+        If collection_names are provided in the request, they will be ignored.'
+      operationId: get_models_embed_usage_usage_models_embed_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EmbedUsageResponse'
+                type: array
+                title: Response Get Models Embed Usage Usage Models Embed Post
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /usage/models/counters:
+    post:
+      tags:
+      - Usage
+      summary: Get Models Usage Counters
+      description: Get models usage counters for all-time and current billing cycle.
+      operationId: get_models_usage_counters_usage_models_counters_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelsUsageCountersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /usage/counters:
+    post:
+      tags:
+      - Usage
+      summary: Get Usage Counters
+      description: Usage counters for all-time and current billing cycle.
+      operationId: get_usage_counters_usage_counters_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageCountersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+components:
+  schemas:
+    UsageCountersResponse:
+      properties:
+        all_time:
+          $ref: '#/components/schemas/UsageStats'
+        billing_cycle:
+          $ref: '#/components/schemas/UsageStats'
+      type: object
+      required:
+      - all_time
+      - billing_cycle
+      title: UsageCountersResponse
+    UsageStats:
+      properties:
+        docs:
+          $ref: '#/components/schemas/UsageMetric'
+        ocr:
+          $ref: '#/components/schemas/UsageMetric'
+        indexed:
+          $ref: '#/components/schemas/UsageMetric'
+        queries:
+          $ref: '#/components/schemas/UsageMetric'
+      type: object
+      required:
+      - docs
+      - ocr
+      - indexed
+      - queries
+      title: UsageStats
+    DocumentUsageResponse:
+      properties:
+        window_start:
+          type: integer
+          title: Window Start
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        event_type:
+          $ref: '#/components/schemas/DocumentEventEnum'
+        event_count:
+          type: integer
+          title: Event Count
+        total_file_size_bytes:
+          type: integer
+          title: Total File Size Bytes
+        total_content_tokens:
+          type: integer
+          title: Total Content Tokens
+        total_llm_tokens:
+          type: integer
+          title: Total Llm Tokens
+        total_embedding_tokens:
+          type: integer
+          title: Total Embedding Tokens
+        total_coarse_chunks:
+          type: integer
+          title: Total Coarse Chunks
+        total_fine_chunks:
+          type: integer
+          title: Total Fine Chunks
+        total_pages:
+          type: integer
+          title: Total Pages
+        total_time_taken_ms:
+          type: number
+          title: Total Time Taken Ms
+      type: object
+      required:
+      - window_start
+      - organization_id
+      - collection_id
+      - event_type
+      - event_count
+      - total_file_size_bytes
+      - total_content_tokens
+      - total_llm_tokens
+      - total_embedding_tokens
+      - total_coarse_chunks
+      - total_fine_chunks
+      - total_pages
+      - total_time_taken_ms
+      title: DocumentUsageResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UsageRequest:
+      properties:
+        start_time:
+          type: integer
+          title: Start Time
+          description: Start time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
+        end_time:
+          type: integer
+          title: End Time
+          description: End time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
+        aggregation_window:
+          allOf:
+          - $ref: '#/components/schemas/AggregationWindow'
+          description: 'Aggregation granularity: minutely, hourly, or daily'
+        collection_names:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Collection Names
+          description: Optional list of collection names to filter by. If None, returns data for all collections.
+      type: object
+      required:
+      - start_time
+      - end_time
+      - aggregation_window
+      title: UsageRequest
+    EmbedUsageResponse:
+      properties:
+        window_start:
+          type: integer
+          title: Window Start
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+        embedding_model:
+          type: string
+          title: Embedding Model
+        explicit_call:
+          type: boolean
+          title: Explicit Call
+        event_count:
+          type: integer
+          title: Event Count
+        total_request_bytes:
+          type: integer
+          title: Total Request Bytes
+        total_request_tokens:
+          type: integer
+          title: Total Request Tokens
+        total_time_taken_ms:
+          type: number
+          title: Total Time Taken Ms
+      type: object
+      required:
+      - window_start
+      - organization_id
+      - embedding_model
+      - explicit_call
+      - event_count
+      - total_request_bytes
+      - total_request_tokens
+      - total_time_taken_ms
+      title: EmbedUsageResponse
+    QueryEnum:
+      type: string
+      enum:
+      - fine
+      - coarse
+      - pages
+      - documents
+      title: QueryEnum
+    DocumentEventEnum:
+      type: string
+      enum:
+      - added
+      - deleted
+      - parsed
+      - indexed
+      title: DocumentEventEnum
+    UsageMetric:
+      properties:
+        count:
+          type: integer
+          title: Count
+        bytes:
+          type: integer
+          title: Bytes
+        billable_units:
+          type: integer
+          title: Billable Units
+      type: object
+      required:
+      - count
+      - bytes
+      - billable_units
+      title: UsageMetric
+    ModelsUsageStats:
+      properties:
+        rerank:
+          $ref: '#/components/schemas/UsageMetric'
+        embed:
+          $ref: '#/components/schemas/UsageMetric'
+      type: object
+      required:
+      - rerank
+      - embed
+      title: ModelsUsageStats
+    ModelsUsageCountersResponse:
+      properties:
+        all_time:
+          $ref: '#/components/schemas/ModelsUsageStats'
+        billing_cycle:
+          $ref: '#/components/schemas/ModelsUsageStats'
+      type: object
+      required:
+      - all_time
+      - billing_cycle
+      title: ModelsUsageCountersResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    QueryUsageResponse:
+      properties:
+        window_start:
+          type: integer
+          title: Window Start
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        query_type:
+          $ref: '#/components/schemas/QueryEnum'
+        event_count:
+          type: integer
+          title: Event Count
+        total_query_bytes:
+          type: integer
+          title: Total Query Bytes
+        total_queried_bytes:
+          type: integer
+          title: Total Queried Bytes
+        total_query_tokens:
+          type: integer
+          title: Total Query Tokens
+        total_results_returned:
+          type: integer
+          title: Total Results Returned
+        total_time_taken_ms:
+          type: number
+          title: Total Time Taken Ms
+      type: object
+      required:
+      - window_start
+      - organization_id
+      - collection_id
+      - query_type
+      - event_count
+      - total_query_bytes
+      - total_queried_bytes
+      - total_query_tokens
+      - total_results_returned
+      - total_time_taken_ms
+      title: QueryUsageResponse
+    AggregationWindow:
+      type: string
+      enum:
+      - minutely
+      - hourly
+      - daily
+      title: AggregationWindow
+    RerankUsageResponse:
+      properties:
+        window_start:
+          type: integer
+          title: Window Start
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+        reranker_model:
+          type: string
+          title: Reranker Model
+        explicit_call:
+          type: boolean
+          title: Explicit Call
+        event_count:
+          type: integer
+          title: Event Count
+        total_request_bytes:
+          type: integer
+          title: Total Request Bytes
+        total_reranker_tokens:
+          type: integer
+          title: Total Reranker Tokens
+        total_documents_reranked:
+          type: integer
+          title: Total Documents Reranked
+        total_time_taken_ms:
+          type: number
+          title: Total Time Taken Ms
+        total_reranking_time_ms:
+          type: number
+          title: Total Reranking Time Ms
+      type: object
+      required:
+      - window_start
+      - organization_id
+      - reranker_model
+      - explicit_call
+      - event_count
+      - total_request_bytes
+      - total_reranker_tokens
+      - total_documents_reranked
+      - total_time_taken_ms
+      - total_reranking_time_ms
+      title: RerankUsageResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: 'The `Authorization` header must be provided in the format `Bearer <your-api-key>`.
+
+
+        You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!'
+      scheme: bearer

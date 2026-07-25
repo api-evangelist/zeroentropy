@@ -1,0 +1,487 @@
+openapi: 3.1.0
+info:
+  title: ZeroEntropy Admin Queries API
+  description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
+  version: 0.1.0
+servers:
+- url: https://api.zeroentropy.dev/v1
+  description: ZeroEntropy API
+- url: https://eu-api.zeroentropy.dev/v1
+  description: ZeroEntropy API (EU datacenters)
+tags:
+- name: Queries
+paths:
+  /queries/top-documents:
+    post:
+      tags:
+      - Queries
+      summary: Top Documents
+      description: Get the top K documents that match the given query
+      operationId: top_documents_queries_top_documents_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopDocumentsRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopDocumentsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /queries/top-pages:
+    post:
+      tags:
+      - Queries
+      summary: Top Pages
+      description: Get the top K pages that match the given query
+      operationId: top_pages_queries_top_pages_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopPagesRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopPagesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /queries/top-snippets:
+    post:
+      tags:
+      - Queries
+      summary: Top Snippets
+      description: 'Get the top K snippets that match the given query.
+
+
+        You may choose between coarse and precise snippets. Precise snippets will average ~200 characters, while coarse snippets will average ~2000 characters. The default is coarse snippets. Use the `precise_responses` parameter to adjust.'
+      operationId: top_snippets_queries_top_snippets_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopSnippetsRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopSnippetsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+components:
+  schemas:
+    DocumentMetadataJson:
+      additionalProperties:
+        anyOf:
+        - type: string
+        - items:
+            type: string
+          type: array
+      type: object
+    SnippetResponse:
+      properties:
+        path:
+          type: string
+          title: Path
+          description: The path of the document that this snippet comes from.
+        start_index:
+          type: integer
+          title: Start Index
+          description: The start index of this snippet.
+        end_index:
+          type: integer
+          title: End Index
+          description: The end index of this snippet.
+        page_span:
+          prefixItems:
+          - type: integer
+          - type: integer
+          type: array
+          items:
+            type: integer
+          maxItems: 2
+          minItems: 2
+          title: Page Span
+          description: The range of page indices spanned by this snippet, as a 2-tuple of integers. Inclusive on the first page_index and exclusive on the second page_index.
+        content:
+          type: string
+          title: Content
+          description: The full string content of this snippet.
+        score:
+          type: number
+          title: Score
+          description: The relevancy score assigned to this snippet.
+      type: object
+      required:
+      - path
+      - start_index
+      - end_index
+      - page_span
+      - content
+      - score
+      title: SnippetResponse
+      description: 'This is a Snippet.
+
+
+        A snippet refers to a particular document path, and index range. Note that all documents, regardless of filetype, are converted into `UTF-8`-encoded strings. The `start_index` and `end_index` refer to the range of characters in that string, that have been matched by this snippet.'
+    DocumentRetrievalResponse:
+      properties:
+        path:
+          type: string
+          title: Path
+          description: The path of the document.
+        score:
+          type: number
+          title: Score
+          description: The relevancy score assigned to this document.
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/DocumentMetadataJson'
+          - type: 'null'
+          description: The metadata for that document. Will be `None` if `include_metadata` is `False`.
+        file_url:
+          type: string
+          title: File Url
+          description: 'A URL to the document data, which can be used to download the raw document content or to display the document in frontend applications.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+      type: object
+      required:
+      - path
+      - score
+      - metadata
+      - file_url
+      title: DocumentRetrievalResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    PageRetrievalResponse:
+      properties:
+        path:
+          type: string
+          title: Path
+          description: The path of the document that this page comes from.
+        page_index:
+          type: integer
+          title: Page Index
+          description: The index of this page in the document. This field is 0-indexed. So, the 1st page has index 0, and the 2nd page has index 1.
+        score:
+          type: number
+          title: Score
+          description: The relevancy score assigned to this page.
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: The contents of this page. This property will be null when `include_content` is `false`, and a string when `include_content` is `true`.
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+          description: 'A URL to an image of the page. This field will only be provided if the document has finished parsing, and if it is a filetype that is capable of producing images (e.g. PDF, DOCX, PPT, etc). In all other cases, this field will be `null`.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+      type: object
+      required:
+      - path
+      - page_index
+      - score
+      - content
+      - image_url
+      title: PageRetrievalResponse
+      description: A Page's metadata.
+    TopSnippetsRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        query:
+          type: string
+          title: Query
+          description: The natural language query to search with. This cannot exceed 4096 characters (A single UTF-8 codepoint, is considered to be 1 character).
+        k:
+          type: integer
+          title: K
+          description: The number of snippets to return. If there are not enough snippets matching your filters, then fewer may be returned. This number must be between 1 and 128, inclusive.
+        reranker:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reranker
+          description: The reranker to use after initial retrieval. The default is `null`. You can find available model ids, along with more information, at [/models/rerank](/api-reference/models/rerank).
+        filter:
+          anyOf:
+          - $ref: '#/components/schemas/StrJson'
+          - type: 'null'
+          description: The query filter to apply. Please read [Metadata Filtering](/metadata-filtering) for more information. If not provided, then all documents will be searched.
+        precise_responses:
+          type: boolean
+          title: Precise Responses
+          description: Enable precise responses. Precise responses will have higher latency, but provide much more precise snippets. When `precise_responses` is set to `true`, the responses will average 200 characters. If set to `false`, the responses will average 2000 characters. The default is `false`.
+          default: false
+        include_document_metadata:
+          type: boolean
+          title: Include Document Metadata
+          description: If true, the `document_results` returns will additionally contain document metadata. This is false by default, as returning metadata can add overhead if the amount of data to return is large.
+          default: false
+      type: object
+      required:
+      - collection_name
+      - query
+      - k
+      title: TopSnippetsRequest
+    TopSnippetsResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/SnippetResponse'
+          type: array
+          title: Results
+          description: The array of snippets returned by this endpoint. Each snippet result refers to a particular document path, and index range. Note that all documents, regardless of filetype, are converted into `UTF-8`-encoded strings. The `start_index` and `end_index` of a snippet refer to the range of characters in that string, that have been matched by this snippet.
+        document_results:
+          items:
+            $ref: '#/components/schemas/DocumentRetrievalResponse'
+          type: array
+          title: Document Results
+          description: The array of associated document information. Note how each snippet has an associated document path. After deduplicating the document paths, this array will contain document info for each document path that is referenced by at least one snippet result.
+      type: object
+      required:
+      - results
+      - document_results
+      title: TopSnippetsResponse
+    TopPagesRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        query:
+          type: string
+          title: Query
+          description: The natural language query to search with. This cannot exceed 4096 UTF-8 bytes.
+        k:
+          type: integer
+          title: K
+          description: The number of pages to return. If there are not enough pages matching your filters, then fewer may be returned. This number must be between 1 and 1024, inclusive.
+        filter:
+          anyOf:
+          - $ref: '#/components/schemas/StrJson'
+          - type: 'null'
+          description: The query filter to apply. Please read [Metadata Filtering](/metadata-filtering) for more information. If not provided, then all documents will be searched.
+        include_content:
+          type: boolean
+          title: Include Content
+          description: If set to true, then the content of all pages will be returned.
+          default: false
+        include_metadata:
+          type: boolean
+          title: Include Metadata
+          description: Whether or not to include the document metadata in the response. If not provided, then the default will be `False`.
+          default: false
+        latency_mode:
+          type: string
+          enum:
+          - low
+          - high
+          title: Latency Mode
+          description: This option selects between our two latency modes. The higher latency mode takes longer, but can allow for more accurate responses. If desired, test both to customize your search experience for your particular use-case, or use the default of "low" and only swap if you need an additional improvement in search result quality.
+          default: low
+      type: object
+      required:
+      - collection_name
+      - query
+      - k
+      title: TopPagesRequest
+    TopDocumentsResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/DocumentRetrievalResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: TopDocumentsResponse
+    TopPagesResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/PageRetrievalResponse'
+          type: array
+          title: Results
+        document_results:
+          items:
+            $ref: '#/components/schemas/DocumentRetrievalResponse'
+          type: array
+          title: Document Results
+          description: The array of associated document information. Note how each result page has an associated document path. After deduplicating the document paths, this array will contain document info for each document path that is referenced by at least one page result.
+      type: object
+      required:
+      - results
+      - document_results
+      title: TopPagesResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TopDocumentsRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        query:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Query
+          description: The natural language query to search with. This cannot exceed 4096 UTF-8 bytes. If `null`, then the sort will be undefined. The purpose of `null` is to do faster metadata filter searches without care for relevancy. Cost per query is unchanged.
+        k:
+          type: integer
+          title: K
+          description: The number of documents to return. If there are not enough documents matching your filters, then fewer may be returned. This number must be between 1 and 2048, inclusive.
+        filter:
+          anyOf:
+          - $ref: '#/components/schemas/StrJson'
+          - type: 'null'
+          description: The query filter to apply. Please read [Metadata Filtering](/metadata-filtering) for more information. If not provided, then all documents will be searched.
+        include_metadata:
+          type: boolean
+          title: Include Metadata
+          description: Whether or not to include the metadata in the top documents response. If not provided, then the default will be `False`.
+          default: false
+        reranker:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reranker
+          description: The reranker to use after initial retrieval. The default is `null`. You can find available model ids along with more information at [/models/rerank](/api-reference/models/rerank).
+        latency_mode:
+          type: string
+          enum:
+          - low
+          - high
+          title: Latency Mode
+          description: This option selects between our two latency modes. The higher latency mode takes longer, but can allow for more accurate responses. If desired, test both to customize your search experience for your particular use-case, or use the default of "low" and only swap if you need an additional improvement in search result quality.
+          default: low
+      type: object
+      required:
+      - collection_name
+      - query
+      - k
+      title: TopDocumentsRequest
+    StrJson:
+      anyOf:
+      - type: string
+      - items:
+          type: string
+        type: array
+      - items:
+          $ref: '#/components/schemas/StrJson'
+        type: array
+      - additionalProperties:
+          $ref: '#/components/schemas/StrJson'
+        type: object
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: 'The `Authorization` header must be provided in the format `Bearer <your-api-key>`.
+
+
+        You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!'
+      scheme: bearer

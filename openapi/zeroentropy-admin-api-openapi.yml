@@ -1,0 +1,583 @@
+openapi: 3.1.0
+info:
+  title: ZeroEntropy Admin API
+  description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
+  version: 0.1.0
+servers:
+- url: https://api.zeroentropy.dev/v1
+  description: ZeroEntropy API
+- url: https://eu-api.zeroentropy.dev/v1
+  description: ZeroEntropy API (EU datacenters)
+tags:
+- name: Admin
+paths:
+  /admin/create-organization:
+    post:
+      tags:
+      - Admin
+      summary: Create Organization
+      description: 'Creates an organization with the provided organization name.
+
+
+        Returns 201 if a new organization was created, 200 if an existing organization was found.'
+      operationId: create_organization_admin_create_organization_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /admin/add-api-key:
+    post:
+      tags:
+      - Admin
+      summary: Add Api Key
+      description: Creates a new API key for the specified organization.
+      operationId: add_api_key_admin_add_api_key_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddAPIKeyRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddAPIKeyResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /admin/list-api-keys:
+    post:
+      tags:
+      - Admin
+      summary: List Api Keys
+      description: Lists all API keys for the specified organization.
+      operationId: list_api_keys_admin_list_api_keys_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAPIKeysRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAPIKeysResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /admin/delete-api-key:
+    post:
+      tags:
+      - Admin
+      summary: Delete Api Key
+      description: Deletes the specified API key.
+      operationId: delete_api_key_admin_delete_api_key_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAPIKeyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /admin/get-organization:
+    post:
+      tags:
+      - Admin
+      summary: Get Organization
+      description: Returns organization details, including rate limits and ZDR state.
+      operationId: get_organization_admin_get_organization_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetOrganizationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrganizationResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /admin/update-organization:
+    post:
+      tags:
+      - Admin
+      summary: Update Organization
+      description: 'Updates subscription tier, rate limit overrides, and/or ZDR state for an organization.
+
+
+        NOTE: Setting a rate limit override to 0 will disable the override and cause the organization to fall back to the default limits for their subscription tier.'
+      operationId: update_organization_admin_update_organization_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+  /admin/update-api-key:
+    post:
+      tags:
+      - Admin
+      summary: Update Api Key
+      description: Updates the name and/or permission of the specified API key.
+      operationId: update_api_key_admin_update_api_key_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAPIKeyRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+      x-hidden: true
+components:
+  schemas:
+    DBAPIKeyPermission:
+      type: string
+      enum:
+      - all
+      - read_only
+      title: DBAPIKeyPermission
+    SubscriptionType:
+      type: string
+      enum:
+      - free
+      - starter
+      - teams
+      - enterprise
+      title: SubscriptionType
+    ListAPIKeysRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID to list API keys for.
+      type: object
+      required:
+      - organization_id
+      title: ListAPIKeysRequest
+    GetOrganizationRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID to retrieve.
+      type: object
+      required:
+      - organization_id
+      title: GetOrganizationRequest
+    APIKeyInfo:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+          description: The API key ID
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: When the API key was created
+        name:
+          type: string
+          title: Name
+          description: The name of the API key
+        permission:
+          allOf:
+          - $ref: '#/components/schemas/DBAPIKeyPermission'
+          description: The permission level
+        created_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created By
+          description: Who created this API key
+        api_key:
+          type: string
+          title: Api Key
+          description: The API key itself
+      type: object
+      required:
+      - id
+      - created_at
+      - name
+      - permission
+      - created_by
+      - api_key
+      title: APIKeyInfo
+    DeleteAPIKeyRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID of the related api key.
+        api_key_id:
+          type: string
+          format: uuid
+          title: Api Key Id
+          description: The API key ID to delete.
+      type: object
+      required:
+      - organization_id
+      - api_key_id
+      title: DeleteAPIKeyRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UpdateOrganizationRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID to update.
+        subscription_tier:
+          anyOf:
+          - $ref: '#/components/schemas/SubscriptionType'
+          - type: 'null'
+          description: Subscription tier to set.
+        override_bpm_fast:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Override Bpm Fast
+          description: 'Admin override: bytes per minute limit with latency: fast. Set to 0 to disable.'
+        override_bpm_slow:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Override Bpm Slow
+          description: 'Admin override: bytes per minute limit with latency: slow. Set to 0 to disable.'
+        override_max_bytes_per_request:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Override Max Bytes Per Request
+          description: 'Admin override: max bytes per request. Set to 0 to disable.'
+        zdr:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zdr
+          description: Whether zero data retention should be enabled.
+      type: object
+      required:
+      - organization_id
+      title: UpdateOrganizationRequest
+    UpdateAPIKeyRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID of the related api key.
+        api_key_id:
+          type: string
+          format: uuid
+          title: Api Key Id
+          description: The API key ID to update.
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: New name for the API key.
+        permission:
+          anyOf:
+          - $ref: '#/components/schemas/DBAPIKeyPermission'
+          - type: 'null'
+          description: New permission level for the API key.
+      type: object
+      required:
+      - organization_id
+      - api_key_id
+      title: UpdateAPIKeyRequest
+    AddAPIKeyRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID to create the API key for.
+        name:
+          type: string
+          title: Name
+          description: A descriptive name for this API key.
+        permission:
+          allOf:
+          - $ref: '#/components/schemas/DBAPIKeyPermission'
+          description: The permission level for this API key.
+        created_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created By
+          description: Who created this API key.
+      type: object
+      required:
+      - organization_id
+      - name
+      - permission
+      title: AddAPIKeyRequest
+    CreateOrganizationRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization id to create. Must be unique.
+      type: object
+      required:
+      - organization_id
+      title: CreateOrganizationRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AddAPIKeyResponse:
+      properties:
+        api_key:
+          type: string
+          title: Api Key
+          description: The generated API key.
+      type: object
+      required:
+      - api_key
+      title: AddAPIKeyResponse
+    GetOrganizationResponse:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID.
+        name:
+          type: string
+          title: Name
+          description: The organization name.
+        subscription_tier:
+          allOf:
+          - $ref: '#/components/schemas/SubscriptionType'
+          description: Current subscription tier.
+        override_bpm_fast:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Override Bpm Fast
+          description: 'Admin override: bytes per minute limit with latency: fast'
+        override_bpm_slow:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Override Bpm Slow
+          description: 'Admin override: bytes per minute limit with latency: slow'
+        override_max_bytes_per_request:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Override Max Bytes Per Request
+          description: 'Admin override: max bytes per request.'
+        zdr:
+          type: boolean
+          title: Zdr
+          description: Zero data retention enabled.
+      type: object
+      required:
+      - organization_id
+      - name
+      - subscription_tier
+      - override_bpm_fast
+      - override_bpm_slow
+      - override_max_bytes_per_request
+      - zdr
+      title: GetOrganizationResponse
+    ListAPIKeysResponse:
+      properties:
+        api_keys:
+          items:
+            $ref: '#/components/schemas/APIKeyInfo'
+          type: array
+          title: Api Keys
+          description: The list of API keys associated with this organization.
+      type: object
+      required:
+      - api_keys
+      title: ListAPIKeysResponse
+    DefaultResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: This string will always be "Success!". This may change in the future.
+          default: Success!
+      type: object
+      title: DefaultResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: 'The `Authorization` header must be provided in the format `Bearer <your-api-key>`.
+
+
+        You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!'
+      scheme: bearer

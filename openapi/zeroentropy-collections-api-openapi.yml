@@ -1,0 +1,220 @@
+openapi: 3.1.0
+info:
+  title: ZeroEntropy Admin Collections API
+  description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
+  version: 0.1.0
+servers:
+- url: https://api.zeroentropy.dev/v1
+  description: ZeroEntropy API
+- url: https://eu-api.zeroentropy.dev/v1
+  description: ZeroEntropy API (EU datacenters)
+tags:
+- name: Collections
+paths:
+  /collections/add-collection:
+    post:
+      tags:
+      - Collections
+      summary: Add Collection
+      description: 'Adds a collection.
+
+
+        If the collection already exists, a `409 Conflict` status code will be returned.'
+      operationId: add_collection_collections_add_collection_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCollectionRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /collections/get-collection-list:
+    post:
+      tags:
+      - Collections
+      summary: Get Collection List
+      description: Gets a complete list of all of your collections.
+      operationId: get_collection_list_collections_get_collection_list_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/EmptyRequest'
+              title: Request
+              default: {}
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCollectionListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /collections/delete-collection:
+    post:
+      tags:
+      - Collections
+      summary: Delete Collection
+      description: 'Deletes a collection.
+
+
+        A `404 Not Found` status code will be returned, if the provided collection name does not exist.'
+      operationId: delete_collection_collections_delete_collection_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteCollectionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                detail: Description of Error
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AddCollectionRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection to add. The maximum length of this string is 1024 characters. If special characters are used, then the UTF-8 encoded string cannot exceed 1024 bytes.
+        num_shards:
+          type: integer
+          title: Num Shards
+          description: '[ADVANCED] The number of shards to use for this collection. By using K shards, your documents can index with K times more throughput. However, queries will be automatically sent to all K shards and then aggregated. For large collections, this can make queries faster. But for small collections, this will make queries slower. `num_shards` must be one of [1, 8, 16, 32, 64]. The default is 1.'
+          default: 1
+      type: object
+      required:
+      - collection_name
+      title: AddCollectionRequest
+    GetCollectionListResponse:
+      properties:
+        collection_names:
+          items:
+            type: string
+          type: array
+          title: Collection Names
+          description: The names of the matched collections.
+      type: object
+      required:
+      - collection_names
+      title: GetCollectionListResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DeleteCollectionRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection to delete.
+      type: object
+      required:
+      - collection_name
+      title: DeleteCollectionRequest
+    EmptyRequest:
+      x-stainless-empty-object: 'true'
+      properties: {}
+      type: object
+      title: EmptyRequest
+    DefaultResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: This string will always be "Success!". This may change in the future.
+          default: Success!
+      type: object
+      title: DefaultResponse
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: 'The `Authorization` header must be provided in the format `Bearer <your-api-key>`.
+
+
+        You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!'
+      scheme: bearer
