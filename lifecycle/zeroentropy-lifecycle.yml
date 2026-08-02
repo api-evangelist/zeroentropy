@@ -1,0 +1,22 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/zeroentropy-openapi.json
+versioning:
+  style: uri-path
+  current: v1
+  evidence: All server URLs are pinned to /v1 (https://api.zeroentropy.dev/v1, https://eu-api.zeroentropy.dev/v1).
+  spec_version: 0.1.0
+deprecation:
+  policy_documented: false
+  deprecated_operations: []
+  note: No Deprecation/Sunset (RFC 8594) headers or deprecation policy were found in
+    the OpenAPI or docs as of this pass.
+status:
+  operation: get_status_status_get_status_post
+  path: /status/get-status
+  public_status_page: null
+  note: The API exposes a /status/get-status operation but no separate public status
+    page (e.g. status.zeroentropy.dev) was found.
+regions:
+- https://api.zeroentropy.dev/v1
+- https://eu-api.zeroentropy.dev/v1

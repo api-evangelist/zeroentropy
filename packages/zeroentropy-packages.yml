@@ -1,0 +1,20 @@
+generated: '2026-07-21'
+method: searched
+source: https://github.com/zeroentropy-ai
+packages:
+- name: zeroentropy
+  registry: pypi
+  language: python
+  official: true
+  url: https://pypi.org/project/zeroentropy/
+  repository: https://github.com/zeroentropy-ai/zeroentropy-python
+  version: 0.1.0a11
+  description: The official Python library for the ZeroEntropy API.
+- name: zeroentropy
+  registry: npm
+  language: typescript
+  official: true
+  url: https://www.npmjs.com/package/zeroentropy
+  repository: https://github.com/zeroentropy-ai/zeroentropy-node
+  version: 0.1.0-alpha.10
+  description: The official TypeScript/Node library for the ZeroEntropy API.

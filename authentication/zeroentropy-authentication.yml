@@ -1,0 +1,16 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/zeroentropy-openapi.json
+summary:
+  types:
+  - http
+schemes:
+- name: HTTPBearer
+  type: http
+  scheme: bearer
+  description: |-
+    The `Authorization` header must be provided in the format `Bearer <your-api-key>`.
+
+    You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!
+  sources:
+  - openapi/zeroentropy-openapi.json

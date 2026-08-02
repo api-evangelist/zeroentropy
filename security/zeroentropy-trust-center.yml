@@ -1,0 +1,14 @@
+generated: '2026-07-21'
+method: searched
+probe: true
+source: https://www.zeroentropy.dev/trust
+url: https://www.zeroentropy.dev/trust
+certifications:
+- SOC 2
+- HIPAA
+evidence:
+- source: https://www.zeroentropy.dev/trust
+  keywords:
+  - soc 2
+  - hipaa
+  - trust center

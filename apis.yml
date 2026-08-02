@@ -1,8 +1,14 @@
 aid: zeroentropy
 name: ZeroEntropy
-description: 'ZeroEntropy is a company surfaced as a portfolio company of initialized-capital and added
-  to the API Evangelist network as a stub for enrichment. Sector: enterprise-saas. This profile is a lead
-  awaiting the enrichment pipeline.'
+description: >-
+  ZeroEntropy builds specialized, lightweight AI models for information retrieval
+  and retrieval-augmented generation (RAG). Its zerank rerankers and zembed embedding
+  models improve the accuracy of any search pipeline, and its hosted retrieval API
+  lets developers create collections, index documents, and run relevance queries
+  (top documents, pages, and snippets) with metadata filtering. The API is a versioned
+  (/v1) HTTP JSON service with US and EU data-center endpoints, official Python and
+  TypeScript SDKs, and API-key bearer authentication. ZeroEntropy is a portfolio
+  company of Initialized Capital operating in the enterprise AI / search sector.
 url: https://raw.githubusercontent.com/api-evangelist/zeroentropy/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -10,18 +16,246 @@ x-backed-by:
 - initialized-capital
 x-tier: stub
 x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
+image: https://zeroentropy.dev/assets/images/ze-logo.png
 tags:
 - Company
 - Enterprise Saas
-apis: []
+- Artificial Intelligence
+- Search
+- Retrieval
+- Embeddings
+- Reranking
+- RAG
+apis:
+- aid: zeroentropy:zeroentropy-admin-api
+  name: ZeroEntropy Admin API
+  description: The Admin API from ZeroEntropy — 7 operation(s) for admin.
+  humanURL: https://docs.zeroentropy.dev/api-reference/
+  baseURL: https://api.zeroentropy.dev/v1
+  tags:
+  - Admin
+  properties:
+  - type: OpenAPI
+    url: openapi/zeroentropy-admin-api-openapi.yml
+  - type: Authentication
+    url: authentication/zeroentropy-authentication.yml
+  - type: Conventions
+    url: conventions/zeroentropy-conventions.yml
+  - type: Idempotency
+    url: conventions/zeroentropy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zeroentropy-problem-types.yml
+  - type: Conformance
+    url: conformance/zeroentropy-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/zeroentropy-lifecycle.yml
+  - type: DataModel
+    url: data-model/zeroentropy-data-model.yml
+- aid: zeroentropy:zeroentropy-collections-api
+  name: ZeroEntropy Collections API
+  description: The Collections API from ZeroEntropy — 3 operation(s) for collections.
+  humanURL: https://docs.zeroentropy.dev/api-reference/
+  baseURL: https://api.zeroentropy.dev/v1
+  tags:
+  - Collections
+  properties:
+  - type: OpenAPI
+    url: openapi/zeroentropy-collections-api-openapi.yml
+  - type: Authentication
+    url: authentication/zeroentropy-authentication.yml
+  - type: Conventions
+    url: conventions/zeroentropy-conventions.yml
+  - type: Idempotency
+    url: conventions/zeroentropy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zeroentropy-problem-types.yml
+  - type: Conformance
+    url: conformance/zeroentropy-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/zeroentropy-lifecycle.yml
+  - type: DataModel
+    url: data-model/zeroentropy-data-model.yml
+- aid: zeroentropy:zeroentropy-documents-api
+  name: ZeroEntropy Documents API
+  description: The Documents API from ZeroEntropy — 8 operation(s) for documents.
+  humanURL: https://docs.zeroentropy.dev/api-reference/
+  baseURL: https://api.zeroentropy.dev/v1
+  tags:
+  - Documents
+  properties:
+  - type: OpenAPI
+    url: openapi/zeroentropy-documents-api-openapi.yml
+  - type: Authentication
+    url: authentication/zeroentropy-authentication.yml
+  - type: Conventions
+    url: conventions/zeroentropy-conventions.yml
+  - type: Idempotency
+    url: conventions/zeroentropy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zeroentropy-problem-types.yml
+  - type: Conformance
+    url: conformance/zeroentropy-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/zeroentropy-lifecycle.yml
+  - type: DataModel
+    url: data-model/zeroentropy-data-model.yml
+- aid: zeroentropy:zeroentropy-models-api
+  name: ZeroEntropy Models API
+  description: The Models API from ZeroEntropy — 2 operation(s) for models.
+  humanURL: https://docs.zeroentropy.dev/api-reference/
+  baseURL: https://api.zeroentropy.dev/v1
+  tags:
+  - Models
+  properties:
+  - type: OpenAPI
+    url: openapi/zeroentropy-models-api-openapi.yml
+  - type: Authentication
+    url: authentication/zeroentropy-authentication.yml
+  - type: Conventions
+    url: conventions/zeroentropy-conventions.yml
+  - type: Idempotency
+    url: conventions/zeroentropy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zeroentropy-problem-types.yml
+  - type: Conformance
+    url: conformance/zeroentropy-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/zeroentropy-lifecycle.yml
+  - type: DataModel
+    url: data-model/zeroentropy-data-model.yml
+- aid: zeroentropy:zeroentropy-queries-api
+  name: ZeroEntropy Queries API
+  description: The Queries API from ZeroEntropy — 3 operation(s) for queries.
+  humanURL: https://docs.zeroentropy.dev/api-reference/
+  baseURL: https://api.zeroentropy.dev/v1
+  tags:
+  - Queries
+  properties:
+  - type: OpenAPI
+    url: openapi/zeroentropy-queries-api-openapi.yml
+  - type: Authentication
+    url: authentication/zeroentropy-authentication.yml
+  - type: Conventions
+    url: conventions/zeroentropy-conventions.yml
+  - type: Idempotency
+    url: conventions/zeroentropy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zeroentropy-problem-types.yml
+  - type: Conformance
+    url: conformance/zeroentropy-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/zeroentropy-lifecycle.yml
+  - type: DataModel
+    url: data-model/zeroentropy-data-model.yml
+- aid: zeroentropy:zeroentropy-status-api
+  name: ZeroEntropy Status API
+  description: The Status API from ZeroEntropy — 1 operation(s) for status.
+  humanURL: https://docs.zeroentropy.dev/api-reference/
+  baseURL: https://api.zeroentropy.dev/v1
+  tags:
+  - Status
+  properties:
+  - type: OpenAPI
+    url: openapi/zeroentropy-status-api-openapi.yml
+  - type: Authentication
+    url: authentication/zeroentropy-authentication.yml
+  - type: Conventions
+    url: conventions/zeroentropy-conventions.yml
+  - type: Idempotency
+    url: conventions/zeroentropy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zeroentropy-problem-types.yml
+  - type: Conformance
+    url: conformance/zeroentropy-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/zeroentropy-lifecycle.yml
+  - type: DataModel
+    url: data-model/zeroentropy-data-model.yml
+- aid: zeroentropy:zeroentropy-usage-api
+  name: ZeroEntropy Usage API
+  description: The Usage API from ZeroEntropy — 6 operation(s) for usage.
+  humanURL: https://docs.zeroentropy.dev/api-reference/
+  baseURL: https://api.zeroentropy.dev/v1
+  tags:
+  - Usage
+  properties:
+  - type: OpenAPI
+    url: openapi/zeroentropy-usage-api-openapi.yml
+  - type: Authentication
+    url: authentication/zeroentropy-authentication.yml
+  - type: Conventions
+    url: conventions/zeroentropy-conventions.yml
+  - type: Idempotency
+    url: conventions/zeroentropy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zeroentropy-problem-types.yml
+  - type: Conformance
+    url: conformance/zeroentropy-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/zeroentropy-lifecycle.yml
+  - type: DataModel
+    url: data-model/zeroentropy-data-model.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Packages
+  url: packages/zeroentropy-packages.yml
+- type: SDKs
+  url: packages/zeroentropy-packages.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/zeroentropy-llms.txt
+- type: TrustCenter
+  url: security/zeroentropy-trust-center.yml
+- type: Compliance
+  url: security/zeroentropy-trust-center.yml
+- type: DomainSecurity
+  url: security/zeroentropy-domain-security.yml
+- type: Authentication
+  url: authentication/zeroentropy-authentication.yml
 - type: Website
   url: https://www.zeroentropy.dev/
+- type: Documentation
+  url: https://docs.zeroentropy.dev/
+- type: APIReference
+  url: https://docs.zeroentropy.dev/api-reference/
+- type: Quickstart
+  url: https://docs.zeroentropy.dev/quickstart
+- type: SignUp
+  url: https://dashboard.zeroentropy.dev/
+- type: Pricing
+  url: https://www.zeroentropy.dev/pricing
+- type: Blog
+  url: https://www.zeroentropy.dev/blog
+- type: GitHubOrganization
+  url: https://github.com/zeroentropy-ai
+- type: TermsOfService
+  url: https://www.zeroentropy.dev/terms
+- type: PrivacyPolicy
+  url: https://www.zeroentropy.dev/privacy
+- type: Support
+  url: mailto:founders@zeroentropy.dev
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 16
+  pass: local-v1

@@ -1,0 +1,26 @@
+{
+  "provider": "zeroentropy",
+  "sources": [
+    "zeroentropy-admin-api-openapi.yml",
+    "zeroentropy-collections-api-openapi.yml",
+    "zeroentropy-documents-api-openapi.yml",
+    "zeroentropy-models-api-openapi.yml",
+    "zeroentropy-queries-api-openapi.yml",
+    "zeroentropy-status-api-openapi.yml",
+    "zeroentropy-usage-api-openapi.yml"
+  ],
+  "outputs": [
+    "zeroentropy-admin-api-openapi.yml",
+    "zeroentropy-collections-api-openapi.yml",
+    "zeroentropy-documents-api-openapi.yml",
+    "zeroentropy-models-api-openapi.yml",
+    "zeroentropy-queries-api-openapi.yml",
+    "zeroentropy-status-api-openapi.yml",
+    "zeroentropy-usage-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

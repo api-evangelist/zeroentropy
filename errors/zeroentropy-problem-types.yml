@@ -1,0 +1,28 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/zeroentropy-openapi.json
+format: fastapi-json
+envelope:
+  field: detail
+  content_type: application/json
+  note: Errors are returned as standard FastAPI JSON. 4xx bodies carry a `detail`
+    string (or, for 422, a `detail[]` array of ValidationError objects with loc/msg/type).
+    Not RFC 9457 application/problem+json.
+problem_types:
+- status: 400
+  title: Bad Request
+  meaning: The request was malformed or violated a documented constraint.
+  remediation: Check request body fields against the endpoint schema.
+- status: 404
+  title: Not Found
+  meaning: The referenced resource (e.g. collection or document) does not exist.
+  remediation: Verify collection_name / document path and that it was created.
+- status: 409
+  title: Conflict
+  meaning: The resource already exists or the operation conflicts with current state
+    (e.g. adding a collection or document that already exists).
+  remediation: Use a unique name/path, or update instead of add.
+- status: 422
+  title: Validation Error
+  meaning: Request failed schema validation; `detail[]` lists offending fields.
+  remediation: Fix the fields identified by each detail[].loc / detail[].msg.

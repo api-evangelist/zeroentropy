@@ -1,0 +1,35 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/zeroentropy-openapi.json
+standards:
+- id: oauth2
+  conforms: false
+  evidence: The only securityScheme is HTTPBearer (bearer API key); no oauth2 flows
+    are declared.
+- id: oidc
+  conforms: false
+  evidence: No openIdConnect scheme; /.well-known/openid-configuration returns 404.
+- id: rfc9457
+  conforms: false
+  evidence: Errors return standard FastAPI JSON (application/json with a `detail`
+    field / HTTPValidationError), not application/problem+json.
+- id: pagination
+  conforms: true
+  evidence: List endpoints use keyset pagination via `limit` plus a `path_gt` cursor
+    (e.g. get-document-info-list).
+- id: idempotency
+  conforms: false
+  evidence: No Idempotency-Key header or idempotency semantics documented in the OpenAPI
+    or docs.
+- id: json:api
+  conforms: false
+  evidence: Responses are plain JSON objects, not JSON:API document envelopes.
+- id: fhir
+  conforms: false
+  evidence: Not a healthcare data API.
+- id: fapi
+  conforms: false
+  evidence: No FAPI security profile; API-key bearer auth only.
+- id: scim
+  conforms: false
+  evidence: No SCIM user/group provisioning surface.

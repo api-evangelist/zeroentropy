@@ -1,0 +1,37 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/zeroentropy-openapi.json
+docs: https://docs.zeroentropy.dev/api-reference/
+authentication:
+  style: bearer
+  credential: api-key
+  header: Authorization
+  format: Bearer <your-api-key>
+  cross_ref: authentication/zeroentropy-authentication.yml
+idempotency:
+  supported: false
+  note: No Idempotency-Key header or idempotent-retry semantics are documented.
+pagination:
+  style: keyset
+  params:
+  - limit
+  - path_gt
+  applies_to:
+  - /documents/get-document-info-list
+  note: List endpoints page by a `limit` count plus a `path_gt` keyset cursor on the
+    document path.
+versioning:
+  style: uri-path
+  current: v1
+  cross_ref: lifecycle/zeroentropy-lifecycle.yml
+errors:
+  envelope_field: detail
+  content_type: application/json
+  format: fastapi-json
+  cross_ref: errors/zeroentropy-problem-types.yml
+rate_limiting:
+  signaling: undocumented
+  note: No rate-limit response headers are declared in the OpenAPI.
+request_shape:
+  note: Nearly all operations are POST with a JSON body (including reads/queries);
+    only get-document and get-page-image are GET with query params.

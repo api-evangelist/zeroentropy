@@ -1,0 +1,11 @@
+generated: '2026-07-21'
+method: generated
+source: openapi/zeroentropy-openapi.json
+api: ZeroEntropy API
+skills:
+- name: zeroentropy-search-collection
+  file: zeroentropy-search-collection.md
+  description: Index documents into a collection and run relevance queries over them.
+- name: zeroentropy-rerank-results
+  file: zeroentropy-rerank-results.md
+  description: Improve an existing search pipeline's relevance with the zerank reranker.

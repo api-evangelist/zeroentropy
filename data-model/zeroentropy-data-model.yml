@@ -1,0 +1,58 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/zeroentropy-openapi.json
+entities:
+- name: Organization
+  key: organization_name
+  operations:
+  - create_organization_admin_create_organization_post
+  - get_organization_admin_get_organization_post
+  - update_organization_admin_update_organization_post
+- name: ApiKey
+  key: api_key
+  belongs_to: Organization
+  operations:
+  - add_api_key_admin_add_api_key_post
+  - list_api_keys_admin_list_api_keys_post
+  - update_api_key_admin_update_api_key_post
+  - delete_api_key_admin_delete_api_key_post
+- name: Collection
+  key: collection_name
+  operations:
+  - add_collection_collections_add_collection_post
+  - get_collection_list_collections_get_collection_list_post
+  - delete_collection_collections_delete_collection_post
+- name: Document
+  key: path
+  belongs_to: Collection
+  operations:
+  - add_document_documents_add_document_post
+  - update_document_documents_update_document_post
+  - get_document_info_documents_get_document_info_post
+  - delete_document_documents_delete_document_post
+- name: Page
+  belongs_to: Document
+  operations:
+  - get_page_info_documents_get_page_info_post
+  - get_page_image_documents_get_page_image_get
+relationships:
+- from: ApiKey
+  to: Organization
+  type: belongs_to
+  via: organization_name
+- from: Collection
+  to: Organization
+  type: belongs_to
+  via: organization_name
+- from: Document
+  to: Collection
+  type: belongs_to
+  via: collection_name
+- from: Page
+  to: Document
+  type: belongs_to
+  via: path
+- from: Collection
+  to: Document
+  type: has_many
+  via: collection_name

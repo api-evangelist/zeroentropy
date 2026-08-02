@@ -1,0 +1,43 @@
+generated: '2026-07-21'
+method: derived
+status: candidate
+source: openapi/zeroentropy-openapi.json
+note: No official hosted or remote MCP server was found for the ZeroEntropy API as
+  of this pass. The ZeroEntropy GitHub org publishes Claude Code plugins (claude-plugins)
+  and agent tooling (probe, zemail) but no MCP server for the retrieval API itself.
+  The tools below are a candidate surface DERIVED from documented OpenAPI operations.
+server:
+  name: zeroentropy
+  transport: null
+  url: null
+tools:
+- name: add_collection
+  operationId: add_collection_collections_add_collection_post
+  description: Adds a collection.
+- name: get_collection_list
+  operationId: get_collection_list_collections_get_collection_list_post
+  description: Gets a complete list of all of your collections.
+- name: delete_collection
+  operationId: delete_collection_collections_delete_collection_post
+  description: Deletes a collection.
+- name: add_document
+  operationId: add_document_documents_add_document_post
+  description: Adds a document to a collection.
+- name: get_document_info_list
+  operationId: get_document_info_list_documents_get_document_info_list_post
+  description: Lists documents in a collection (keyset pagination via limit + path_gt).
+- name: top_documents
+  operationId: top_documents_queries_top_documents_post
+  description: Gets the top K documents that match the given query.
+- name: top_pages
+  operationId: top_pages_queries_top_pages_post
+  description: Gets the top K pages that match the given query.
+- name: top_snippets
+  operationId: top_snippets_queries_top_snippets_post
+  description: Gets the top K snippets that match the given query.
+- name: rerank
+  operationId: rerank_models_rerank_post
+  description: Reranks documents against a query with the zerank model.
+- name: embed
+  operationId: embed_models_embed_post
+  description: Produces embeddings with the zembed model.

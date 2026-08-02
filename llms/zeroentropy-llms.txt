@@ -1,0 +1,44 @@
+# ZeroEntropy
+
+## Docs
+
+- [Add Collection](https://docs.zeroentropy.dev/api-reference/collections/add-collection.md): Adds a collection.
+- [Delete Collection](https://docs.zeroentropy.dev/api-reference/collections/delete-collection.md): Deletes a collection.
+- [Get Collection List](https://docs.zeroentropy.dev/api-reference/collections/get-collection-list.md): Gets a complete list of all of your collections.
+- [Add Document](https://docs.zeroentropy.dev/api-reference/documents/add-document.md): Adds a document to a given collection.
+- [Delete Document](https://docs.zeroentropy.dev/api-reference/documents/delete-document.md): Deletes a document
+- [Get Document Info](https://docs.zeroentropy.dev/api-reference/documents/get-document-info.md): Retrieves information about a specific document. The request parameters define what information you would like to receive.
+- [Get Document Info List](https://docs.zeroentropy.dev/api-reference/documents/get-document-info-list.md): Retrives a list of document metadata information that matches the provided filters.
+- [Get Page Info](https://docs.zeroentropy.dev/api-reference/documents/get-page-info.md): Retrieves information about a specific page. The request parameters define what information you would like to receive.
+- [Update Document](https://docs.zeroentropy.dev/api-reference/documents/update-document.md): Updates a document. This endpoint is atomic.
+- [Embed](https://docs.zeroentropy.dev/api-reference/models/embed.md): Embeds the provided input text with ZeroEntropy embedding models.
+- [Rerank](https://docs.zeroentropy.dev/api-reference/models/rerank.md): Reranks the provided documents, according to the provided query.
+- [Top Documents](https://docs.zeroentropy.dev/api-reference/queries/top-documents.md): Get the top K documents that match the given query
+- [Top Pages](https://docs.zeroentropy.dev/api-reference/queries/top-pages.md): Get the top K pages that match the given query
+- [Top Snippets](https://docs.zeroentropy.dev/api-reference/queries/top-snippets.md): Get the top K snippets that match the given query.
+- [Get Status](https://docs.zeroentropy.dev/api-reference/status/get-status.md): Gets the current indexing status across all documents.
+- [Architecture](https://docs.zeroentropy.dev/architecture.md): ZeroEntropy's system architecture
+- [Core Concepts](https://docs.zeroentropy.dev/core-concepts.md): Understand the core concepts behind ZeroEntropy — our models and end-to-end search engine.
+- [Embed](https://docs.zeroentropy.dev/examples/embed.md): Inference ZeroEntropy's embedding model zembed-1
+- [Query](https://docs.zeroentropy.dev/examples/query.md): Query your documents using ZeroEntropy
+- [Rerank](https://docs.zeroentropy.dev/examples/rerank.md): Rerank your search results using ZeroEntropy
+- [Set Up](https://docs.zeroentropy.dev/examples/setup.md): Setting up ZeroEntropy
+- [Upload](https://docs.zeroentropy.dev/examples/upload.md): Examples of uploading documents to ZeroEntropy
+- [Introduction](https://docs.zeroentropy.dev/introduction.md): Welcome to the ZeroEntropy documentation.
+- [Metadata Filtering](https://docs.zeroentropy.dev/metadata-filtering.md): Filtering queries by document metadata
+- [Models](https://docs.zeroentropy.dev/models.md): Using Embedding and Reranking Models Developed by ZeroEntropy
+- [Quickstart](https://docs.zeroentropy.dev/quickstart.md): Getting Started using the ZeroEntropy API
+- [Search Engine](https://docs.zeroentropy.dev/zsearch.md): Using `zsearch`, the search engine developed by ZeroEntropy
+
+## OpenAPI Specs
+
+- [openapi](https://docs.zeroentropy.dev/api-reference/openapi.json)
+- [openapi2](https://docs.zeroentropy.dev/api-reference/openapi2.json)
+
+## Optional
+
+- [Home page](https://zeroentropy.dev)
+- [Dashboard](https://dashboard.zeroentropy.dev)
+- [Slack Community](https://go.zeroentropy.dev/slack)
+- [Discord Community](https://go.zeroentropy.dev/discord)
+- [Blog](https://www.zeroentropy.dev/blog)
