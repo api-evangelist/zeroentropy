@@ -1,0 +1,37 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroEntropy Admin Status API",
+    "version": "0.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/status/get-status",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets the current indexing status across all documents.\n\nIf a collection name is passed in, it will get the indexing status of only the documents within that collection. Otherwise, it will show the cumulative status across all of your collections.\n\nA `404 Not Found` status code will be returned, if a collection name was provided, but it does not exist."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

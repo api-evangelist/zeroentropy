@@ -1,0 +1,458 @@
+{
+  "item": [
+    {
+      "id": "7c44a46d-9308-4222-8ccd-155930d073e6",
+      "name": "Models",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0df401de-cac6-44f8-824e-9572f2411ebd",
+          "name": "Rerank",
+          "request": {
+            "name": "Rerank",
+            "description": {
+              "content": "Reranks the provided documents, according to the provided query.\n\nThe results will be sorted by descending order of relevance. For each document, the index and the score will be returned. The index is relative to the documents array that was passed in. The score is the query-document relevancy determined by the reranker model. The results will be returned in descending order of relevance.\n\nOrganizations will, by default, have a ratelimit of `500,000` bytes-per-minute (BPM) and `1000` requests-per-minute (RPM). Ratelimits are refreshed every 15 seconds. If this is exceeded, requests will be throttled into `latency: \"slow\"` mode, up to `5000000` bytes-per-minute. If even this is exceeded, you will get a `429` error.\n\nThe \"bytes\" used by a request is calculated as `sum(150 + query.encode('utf-8') + d.encode('utf-8') for d in documents)`. Note a baseline overhead of `150` bytes, and that the query bytes are included for each document, as rerankers are cross-encoders. The maximum per-request payload size is `5000000` bytes.\n\nTo increase your ratelimits, subscribe to a higher tier on the [ZeroEntropy dashboard](https://dashboard.zeroentropy.dev/billing). Any payments made for subscriptions in a calendar month will be deducted from your usage charges for that month.\n\nTo request even higher ratelimits, please contact [founders@zeroentropy.dev](mailto:founders@zeroentropy.dev) or message us on [Discord](https://go.zeroentropy.dev/discord) or [Slack](https://go.zeroentropy.dev/slack)!",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                "rerank"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"query\": \"<string>\",\n  \"documents\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"top_n\": \"<integer>\",\n  \"latency\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "df22254e-6e7b-437f-bdb1-3ceb536af89d",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    "rerank"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"query\": \"<string>\",\n  \"documents\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"top_n\": \"<integer>\",\n  \"latency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"index\": 8068,\n      \"relevance_score\": 3400.850689971946\n    },\n    {\n      \"index\": 2106,\n      \"relevance_score\": 9325.9783304682\n    }\n  ],\n  \"total_bytes\": 8321,\n  \"total_tokens\": 9698,\n  \"actual_latency_mode\": \"fast\",\n  \"e2e_latency\": 6306.650895063046,\n  \"inference_latency\": 148.71248058435427\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "da10f377-fc92-4d88-82cf-33d42f2ebad3",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    "rerank"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"query\": \"<string>\",\n  \"documents\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"top_n\": \"<integer>\",\n  \"latency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Description of Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0aee26ab-a74e-4eb2-9e76-eaee1c51c716",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    "rerank"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"query\": \"<string>\",\n  \"documents\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"top_n\": \"<integer>\",\n  \"latency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "04726fa7-1710-44bb-ba4e-7029aa1bffb1",
+          "name": "Embed",
+          "request": {
+            "name": "Embed",
+            "description": {
+              "content": "Embeds the provided input text with ZeroEntropy embedding models.\n\nThe results will be returned in the same order as the text provided. The embedding is such that queries will have high cosine similarity with documents that are relevant to that query.\n\nOrganizations will, by default, have a ratelimit of `500000` bytes-per-minute. Ratelimits are refreshed every 15 seconds. If this is exceeded, requests will be throttled into `latency: \"slow\"` mode, up to `5000000` bytes-per-minute. If even this is exceeded, you will get a `429` error.\n\nThe \"bytes\" used by a request is calculated as `sum(150 + s.encode('utf-8') for s in input)`. Note a baseline overhead of `150` bytes. The maximum per-request payload size is `5000000` bytes.\n\nTo increase your ratelimits, subscribe to a higher tier on the [ZeroEntropy dashboard](https://dashboard.zeroentropy.dev/billing). Any payments made for subscriptions in a calendar month will be deducted from your usage charges for that month.\n\nTo request even higher ratelimits, please contact [founders@zeroentropy.dev](mailto:founders@zeroentropy.dev) or message us on [Discord](https://go.zeroentropy.dev/discord) or [Slack](https://go.zeroentropy.dev/slack)!",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                "embed"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"input_type\": \"<string>\",\n  \"input\": \"<string>\",\n  \"dimensions\": \"<integer>\",\n  \"encoding_format\": \"float\",\n  \"latency\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6c79797b-fa55-4088-9d1d-7672e044abb5",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    "embed"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input_type\": \"<string>\",\n  \"input\": \"<string>\",\n  \"dimensions\": \"<integer>\",\n  \"encoding_format\": \"float\",\n  \"latency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"embedding\": [\n        7150.819735686265,\n        1404.2305341156814\n      ]\n    },\n    {\n      \"embedding\": [\n        2284.656267456785,\n        3402.9031219765106\n      ]\n    }\n  ],\n  \"usage\": {\n    \"total_bytes\": 1375,\n    \"total_tokens\": 4775\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4aaba15e-86c5-41a8-9c4c-571d52b095c2",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    "embed"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input_type\": \"<string>\",\n  \"input\": \"<string>\",\n  \"dimensions\": \"<integer>\",\n  \"encoding_format\": \"float\",\n  \"latency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Description of Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "91553dce-6076-4da5-bb72-bfa61fca4a71",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    "embed"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input_type\": \"<string>\",\n  \"input\": \"<string>\",\n  \"dimensions\": \"<integer>\",\n  \"encoding_format\": \"float\",\n  \"latency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.zeroentropy.dev/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "4c432dfc-f11f-4a00-9d6b-97b4300578e5",
+    "name": "ZeroEntropy Admin Models API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!",
+      "type": "text/plain"
+    }
+  }
+}

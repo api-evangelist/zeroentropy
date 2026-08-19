@@ -2,10 +2,10 @@ generated: '2026-07-21'
 method: derived
 status: candidate
 source: openapi/zeroentropy-openapi.json
-note: No official hosted or remote MCP server was found for the ZeroEntropy API as
-  of this pass. The ZeroEntropy GitHub org publishes Claude Code plugins (claude-plugins)
-  and agent tooling (probe, zemail) but no MCP server for the retrieval API itself.
-  The tools below are a candidate surface DERIVED from documented OpenAPI operations.
+note: No official hosted or remote MCP server was found for the ZeroEntropy API as of this pass. The ZeroEntropy
+  GitHub org publishes Claude Code plugins (claude-plugins) and agent tooling (probe, zemail) but no MCP
+  server for the retrieval API itself. The tools below are a candidate surface DERIVED from documented
+  OpenAPI operations.
 server:
   name: zeroentropy
   transport: null
@@ -41,3 +41,9 @@ tools:
 - name: embed
   operationId: embed_models_embed_post
   description: Produces embeddings with the zembed model.
+deployment:
+  mode: none
+  verified: derived
+  tools: 10
+  checked: '2026-08-12'
+  source: catalog MCP census

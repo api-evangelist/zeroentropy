@@ -1,0 +1,75 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroEntropy Admin Collections API",
+    "version": "0.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Collections",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add Collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/collections/add-collection",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Adds a collection.\n\nIf the collection already exists, a `409 Conflict` status code will be returned."
+        },
+        {
+          "info": {
+            "name": "Get Collection List",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/collections/get-collection-list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets a complete list of all of your collections."
+        },
+        {
+          "info": {
+            "name": "Delete Collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/collections/delete-collection",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes a collection.\n\nA `404 Not Found` status code will be returned, if the provided collection name does not exist."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

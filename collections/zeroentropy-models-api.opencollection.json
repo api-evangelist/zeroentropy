@@ -1,0 +1,56 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroEntropy Admin Models API",
+    "version": "0.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Models",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Rerank",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/models/rerank",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Reranks the provided documents, according to the provided query.\n\nThe results will be sorted by descending order of relevance. For each document, the index and the score will be returned. The index is relative to the documents array that was passed in. The score is the query-document relevancy determined by the reranker model. The results will be returned in descending order of relevance.\n\nOrganizations will, by default, have a ratelimit of `500,000` bytes-per-minute (BPM) and `1000` requests-pe"
+        },
+        {
+          "info": {
+            "name": "Embed",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/models/embed",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Embeds the provided input text with ZeroEntropy embedding models.\n\nThe results will be returned in the same order as the text provided. The embedding is such that queries will have high cosine similarity with documents that are relevant to that query.\n\nOrganizations will, by default, have a ratelimit of `500000` bytes-per-minute. Ratelimits are refreshed every 15 seconds. If this is exceeded, requests will be throttled into `latency: \"slow\"` mode, up to `5000000` bytes-per-minute. If even this i"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,124 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroEntropy Admin Usage API",
+    "version": "0.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Document Usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/usage/documents",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Document usage analytics (added/deleted/parsed/indexed events)."
+        },
+        {
+          "info": {
+            "name": "Get Query Usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/usage/queries",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Query usage (fine/coarse/pages/documents queries)."
+        },
+        {
+          "info": {
+            "name": "Get Models Reranker Usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/usage/models/reranker",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get reranker usage analytics with model breakdown.\n\nNote: Rerank events don't have collection_id, so collection filtering is not supported.\nIf collection_names are provided in the request, they will be ignored."
+        },
+        {
+          "info": {
+            "name": "Get Models Embed Usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/usage/models/embed",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get embedding usage analytics with model breakdown.\n\nNote: Embed events don't have collection_id, so collection filtering is not supported.\nIf collection_names are provided in the request, they will be ignored."
+        },
+        {
+          "info": {
+            "name": "Get Models Usage Counters",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/usage/models/counters",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get models usage counters for all-time and current billing cycle."
+        },
+        {
+          "info": {
+            "name": "Get Usage Counters",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/usage/counters",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Usage counters for all-time and current billing cycle."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

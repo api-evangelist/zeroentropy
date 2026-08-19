@@ -1,0 +1,75 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ZeroEntropy Admin Queries API",
+    "version": "0.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Queries",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Top Documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/queries/top-documents",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the top K documents that match the given query"
+        },
+        {
+          "info": {
+            "name": "Top Pages",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/queries/top-pages",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the top K pages that match the given query"
+        },
+        {
+          "info": {
+            "name": "Top Snippets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.zeroentropy.dev/v1/queries/top-snippets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the top K snippets that match the given query.\n\nYou may choose between coarse and precise snippets. Precise snippets will average ~200 characters, while coarse snippets will average ~2000 characters. The default is coarse snippets. Use the `precise_responses` parameter to adjust."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
