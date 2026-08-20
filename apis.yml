@@ -72,6 +72,8 @@ apis:
   humanURL: https://docs.zeroentropy.dev/api-reference/
   baseURL: https://api.zeroentropy.dev/v1
   tags:
+  - Collection
+  tags_raw:
   - Collections
   properties:
   - type: OpenAPI
@@ -144,6 +146,8 @@ apis:
   humanURL: https://docs.zeroentropy.dev/api-reference/
   baseURL: https://api.zeroentropy.dev/v1
   tags:
+  - Query
+  tags_raw:
   - Queries
   properties:
   - type: OpenAPI
