@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: ZeroEntropy Admin Queries API
+  title: ZeroEntropy Queries API
   description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
   version: 0.1.0
 servers:
@@ -136,14 +136,6 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
-    DocumentMetadataJson:
-      additionalProperties:
-        anyOf:
-        - type: string
-        - items:
-            type: string
-          type: array
-      type: object
     SnippetResponse:
       properties:
         path:
@@ -190,94 +182,6 @@ components:
 
 
         A snippet refers to a particular document path, and index range. Note that all documents, regardless of filetype, are converted into `UTF-8`-encoded strings. The `start_index` and `end_index` refer to the range of characters in that string, that have been matched by this snippet.'
-    DocumentRetrievalResponse:
-      properties:
-        path:
-          type: string
-          title: Path
-          description: The path of the document.
-        score:
-          type: number
-          title: Score
-          description: The relevancy score assigned to this document.
-        metadata:
-          anyOf:
-          - $ref: '#/components/schemas/DocumentMetadataJson'
-          - type: 'null'
-          description: The metadata for that document. Will be `None` if `include_metadata` is `False`.
-        file_url:
-          type: string
-          title: File Url
-          description: 'A URL to the document data, which can be used to download the raw document content or to display the document in frontend applications.
-
-
-            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
-      type: object
-      required:
-      - path
-      - score
-      - metadata
-      - file_url
-      title: DocumentRetrievalResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    PageRetrievalResponse:
-      properties:
-        path:
-          type: string
-          title: Path
-          description: The path of the document that this page comes from.
-        page_index:
-          type: integer
-          title: Page Index
-          description: The index of this page in the document. This field is 0-indexed. So, the 1st page has index 0, and the 2nd page has index 1.
-        score:
-          type: number
-          title: Score
-          description: The relevancy score assigned to this page.
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-          description: The contents of this page. This property will be null when `include_content` is `false`, and a string when `include_content` is `true`.
-        image_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Image Url
-          description: 'A URL to an image of the page. This field will only be provided if the document has finished parsing, and if it is a filetype that is capable of producing images (e.g. PDF, DOCX, PPT, etc). In all other cases, this field will be `null`.
-
-
-            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
-      type: object
-      required:
-      - path
-      - page_index
-      - score
-      - content
-      - image_url
-      title: PageRetrievalResponse
-      description: A Page's metadata.
     TopSnippetsRequest:
       properties:
         collection_name:
@@ -319,6 +223,73 @@ components:
       - query
       - k
       title: TopSnippetsRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    TopDocumentsRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        query:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Query
+          description: The natural language query to search with. This cannot exceed 4096 UTF-8 bytes. If `null`, then the sort will be undefined. The purpose of `null` is to do faster metadata filter searches without care for relevancy. Cost per query is unchanged.
+        k:
+          type: integer
+          title: K
+          description: The number of documents to return. If there are not enough documents matching your filters, then fewer may be returned. This number must be between 1 and 2048, inclusive.
+        filter:
+          anyOf:
+          - $ref: '#/components/schemas/StrJson'
+          - type: 'null'
+          description: The query filter to apply. Please read [Metadata Filtering](/metadata-filtering) for more information. If not provided, then all documents will be searched.
+        include_metadata:
+          type: boolean
+          title: Include Metadata
+          description: Whether or not to include the metadata in the top documents response. If not provided, then the default will be `False`.
+          default: false
+        reranker:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reranker
+          description: The reranker to use after initial retrieval. The default is `null`. You can find available model ids along with more information at [/models/rerank](/api-reference/models/rerank).
+        latency_mode:
+          type: string
+          enum:
+          - low
+          - high
+          title: Latency Mode
+          description: This option selects between our two latency modes. The higher latency mode takes longer, but can allow for more accurate responses. If desired, test both to customize your search experience for your particular use-case, or use the default of "low" and only swap if you need an additional improvement in search result quality.
+          default: low
+      type: object
+      required:
+      - collection_name
+      - query
+      - k
+      title: TopDocumentsRequest
     TopSnippetsResponse:
       properties:
         results:
@@ -381,6 +352,18 @@ components:
       - query
       - k
       title: TopPagesRequest
+    StrJson:
+      anyOf:
+      - type: string
+      - items:
+          type: string
+        type: array
+      - items:
+          $ref: '#/components/schemas/StrJson'
+        type: array
+      - additionalProperties:
+          $ref: '#/components/schemas/StrJson'
+        type: object
     TopDocumentsResponse:
       properties:
         results:
@@ -392,6 +375,35 @@ components:
       required:
       - results
       title: TopDocumentsResponse
+    DocumentRetrievalResponse:
+      properties:
+        path:
+          type: string
+          title: Path
+          description: The path of the document.
+        score:
+          type: number
+          title: Score
+          description: The relevancy score assigned to this document.
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/DocumentMetadataJson'
+          - type: 'null'
+          description: The metadata for that document. Will be `None` if `include_metadata` is `False`.
+        file_url:
+          type: string
+          title: File Url
+          description: 'A URL to the document data, which can be used to download the raw document content or to display the document in frontend applications.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+      type: object
+      required:
+      - path
+      - score
+      - metadata
+      - file_url
+      title: DocumentRetrievalResponse
     TopPagesResponse:
       properties:
         results:
@@ -419,64 +431,52 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    TopDocumentsRequest:
+    DocumentMetadataJson:
+      additionalProperties:
+        anyOf:
+        - type: string
+        - items:
+            type: string
+          type: array
+      type: object
+    PageRetrievalResponse:
       properties:
-        collection_name:
+        path:
           type: string
-          title: Collection Name
-          description: The name of the collection.
-        query:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Query
-          description: The natural language query to search with. This cannot exceed 4096 UTF-8 bytes. If `null`, then the sort will be undefined. The purpose of `null` is to do faster metadata filter searches without care for relevancy. Cost per query is unchanged.
-        k:
+          title: Path
+          description: The path of the document that this page comes from.
+        page_index:
           type: integer
-          title: K
-          description: The number of documents to return. If there are not enough documents matching your filters, then fewer may be returned. This number must be between 1 and 2048, inclusive.
-        filter:
-          anyOf:
-          - $ref: '#/components/schemas/StrJson'
-          - type: 'null'
-          description: The query filter to apply. Please read [Metadata Filtering](/metadata-filtering) for more information. If not provided, then all documents will be searched.
-        include_metadata:
-          type: boolean
-          title: Include Metadata
-          description: Whether or not to include the metadata in the top documents response. If not provided, then the default will be `False`.
-          default: false
-        reranker:
+          title: Page Index
+          description: The index of this page in the document. This field is 0-indexed. So, the 1st page has index 0, and the 2nd page has index 1.
+        score:
+          type: number
+          title: Score
+          description: The relevancy score assigned to this page.
+        content:
           anyOf:
           - type: string
           - type: 'null'
-          title: Reranker
-          description: The reranker to use after initial retrieval. The default is `null`. You can find available model ids along with more information at [/models/rerank](/api-reference/models/rerank).
-        latency_mode:
-          type: string
-          enum:
-          - low
-          - high
-          title: Latency Mode
-          description: This option selects between our two latency modes. The higher latency mode takes longer, but can allow for more accurate responses. If desired, test both to customize your search experience for your particular use-case, or use the default of "low" and only swap if you need an additional improvement in search result quality.
-          default: low
+          title: Content
+          description: The contents of this page. This property will be null when `include_content` is `false`, and a string when `include_content` is `true`.
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+          description: 'A URL to an image of the page. This field will only be provided if the document has finished parsing, and if it is a filetype that is capable of producing images (e.g. PDF, DOCX, PPT, etc). In all other cases, this field will be `null`.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
       type: object
       required:
-      - collection_name
-      - query
-      - k
-      title: TopDocumentsRequest
-    StrJson:
-      anyOf:
-      - type: string
-      - items:
-          type: string
-        type: array
-      - items:
-          $ref: '#/components/schemas/StrJson'
-        type: array
-      - additionalProperties:
-          $ref: '#/components/schemas/StrJson'
-        type: object
+      - path
+      - page_index
+      - score
+      - content
+      - image_url
+      title: PageRetrievalResponse
+      description: A Page's metadata.
   securitySchemes:
     HTTPBearer:
       type: http

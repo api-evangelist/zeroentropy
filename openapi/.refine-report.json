@@ -1,13 +1,7 @@
 {
   "provider": "zeroentropy",
   "sources": [
-    "zeroentropy-admin-api-openapi.yml",
-    "zeroentropy-collections-api-openapi.yml",
-    "zeroentropy-documents-api-openapi.yml",
-    "zeroentropy-models-api-openapi.yml",
-    "zeroentropy-queries-api-openapi.yml",
-    "zeroentropy-status-api-openapi.yml",
-    "zeroentropy-usage-api-openapi.yml"
+    "_original/zeroentropy-openapi.json"
   ],
   "outputs": [
     "zeroentropy-admin-api-openapi.yml",
@@ -21,6 +15,25 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "zeroentropy-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "zeroentropy-openapi.json: declared missing tag: Admin",
+    "zeroentropy-openapi.json: declared missing tag: Collections",
+    "zeroentropy-openapi.json: declared missing tag: Documents",
+    "zeroentropy-openapi.json: declared missing tag: Models",
+    "zeroentropy-openapi.json: declared missing tag: Queries",
+    "zeroentropy-openapi.json: declared missing tag: Status",
+    "zeroentropy-openapi.json: declared missing tag: Usage",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "zeroentropy-admin-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zeroentropy-collections-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zeroentropy-documents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zeroentropy-models-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zeroentropy-queries-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zeroentropy-status-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zeroentropy-usage-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

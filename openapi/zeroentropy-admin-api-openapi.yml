@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: ZeroEntropy Admin API
   description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
@@ -264,98 +264,35 @@ paths:
       x-hidden: true
 components:
   schemas:
+    CreateOrganizationRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization id to create. Must be unique.
+      type: object
+      required:
+      - organization_id
+      title: CreateOrganizationRequest
+    ListAPIKeysResponse:
+      properties:
+        api_keys:
+          items:
+            $ref: '#/components/schemas/APIKeyInfo'
+          type: array
+          title: Api Keys
+          description: The list of API keys associated with this organization.
+      type: object
+      required:
+      - api_keys
+      title: ListAPIKeysResponse
     DBAPIKeyPermission:
       type: string
       enum:
       - all
       - read_only
       title: DBAPIKeyPermission
-    SubscriptionType:
-      type: string
-      enum:
-      - free
-      - starter
-      - teams
-      - enterprise
-      title: SubscriptionType
-    ListAPIKeysRequest:
-      properties:
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-          description: The organization ID to list API keys for.
-      type: object
-      required:
-      - organization_id
-      title: ListAPIKeysRequest
-    GetOrganizationRequest:
-      properties:
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-          description: The organization ID to retrieve.
-      type: object
-      required:
-      - organization_id
-      title: GetOrganizationRequest
-    APIKeyInfo:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-          description: The API key ID
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-          description: When the API key was created
-        name:
-          type: string
-          title: Name
-          description: The name of the API key
-        permission:
-          allOf:
-          - $ref: '#/components/schemas/DBAPIKeyPermission'
-          description: The permission level
-        created_by:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Created By
-          description: Who created this API key
-        api_key:
-          type: string
-          title: Api Key
-          description: The API key itself
-      type: object
-      required:
-      - id
-      - created_at
-      - name
-      - permission
-      - created_by
-      - api_key
-      title: APIKeyInfo
-    DeleteAPIKeyRequest:
-      properties:
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-          description: The organization ID of the related api key.
-        api_key_id:
-          type: string
-          format: uuid
-          title: Api Key Id
-          description: The API key ID to delete.
-      type: object
-      required:
-      - organization_id
-      - api_key_id
-      title: DeleteAPIKeyRequest
     ValidationError:
       properties:
         loc:
@@ -420,7 +357,7 @@ components:
       required:
       - organization_id
       title: UpdateOrganizationRequest
-    UpdateAPIKeyRequest:
+    DeleteAPIKeyRequest:
       properties:
         organization_id:
           type: string
@@ -431,23 +368,21 @@ components:
           type: string
           format: uuid
           title: Api Key Id
-          description: The API key ID to update.
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-          description: New name for the API key.
-        permission:
-          anyOf:
-          - $ref: '#/components/schemas/DBAPIKeyPermission'
-          - type: 'null'
-          description: New permission level for the API key.
+          description: The API key ID to delete.
       type: object
       required:
       - organization_id
       - api_key_id
-      title: UpdateAPIKeyRequest
+      title: DeleteAPIKeyRequest
+    DefaultResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: This string will always be "Success!". This may change in the future.
+          default: Success!
+      type: object
+      title: DefaultResponse
     AddAPIKeyRequest:
       properties:
         organization_id:
@@ -475,26 +410,6 @@ components:
       - name
       - permission
       title: AddAPIKeyRequest
-    CreateOrganizationRequest:
-      properties:
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-          description: The organization id to create. Must be unique.
-      type: object
-      required:
-      - organization_id
-      title: CreateOrganizationRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     AddAPIKeyResponse:
       properties:
         api_key:
@@ -552,27 +467,112 @@ components:
       - override_max_bytes_per_request
       - zdr
       title: GetOrganizationResponse
-    ListAPIKeysResponse:
+    SubscriptionType:
+      type: string
+      enum:
+      - free
+      - starter
+      - teams
+      - enterprise
+      title: SubscriptionType
+    UpdateAPIKeyRequest:
       properties:
-        api_keys:
-          items:
-            $ref: '#/components/schemas/APIKeyInfo'
-          type: array
-          title: Api Keys
-          description: The list of API keys associated with this organization.
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID of the related api key.
+        api_key_id:
+          type: string
+          format: uuid
+          title: Api Key Id
+          description: The API key ID to update.
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: New name for the API key.
+        permission:
+          anyOf:
+          - $ref: '#/components/schemas/DBAPIKeyPermission'
+          - type: 'null'
+          description: New permission level for the API key.
       type: object
       required:
-      - api_keys
-      title: ListAPIKeysResponse
-    DefaultResponse:
+      - organization_id
+      - api_key_id
+      title: UpdateAPIKeyRequest
+    ListAPIKeysRequest:
       properties:
-        message:
+        organization_id:
           type: string
-          title: Message
-          description: This string will always be "Success!". This may change in the future.
-          default: Success!
+          format: uuid
+          title: Organization Id
+          description: The organization ID to list API keys for.
       type: object
-      title: DefaultResponse
+      required:
+      - organization_id
+      title: ListAPIKeysRequest
+    GetOrganizationRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization ID to retrieve.
+      type: object
+      required:
+      - organization_id
+      title: GetOrganizationRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    APIKeyInfo:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+          description: The API key ID
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: When the API key was created
+        name:
+          type: string
+          title: Name
+          description: The name of the API key
+        permission:
+          allOf:
+          - $ref: '#/components/schemas/DBAPIKeyPermission'
+          description: The permission level
+        created_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created By
+          description: Who created this API key
+        api_key:
+          type: string
+          title: Api Key
+          description: The API key itself
+      type: object
+      required:
+      - id
+      - created_at
+      - name
+      - permission
+      - created_by
+      - api_key
+      title: APIKeyInfo
   securitySchemes:
     HTTPBearer:
       type: http

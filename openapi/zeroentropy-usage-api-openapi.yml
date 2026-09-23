@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: ZeroEntropy Admin Usage API
+  title: ZeroEntropy Usage API
   description: This API provides access to ZeroEntropy's SoTA retrieval pipeline. Enjoy!
   version: 0.1.0
 servers:
@@ -269,34 +269,84 @@ paths:
       x-hidden: true
 components:
   schemas:
-    UsageCountersResponse:
+    RerankUsageResponse:
       properties:
-        all_time:
-          $ref: '#/components/schemas/UsageStats'
-        billing_cycle:
-          $ref: '#/components/schemas/UsageStats'
+        window_start:
+          type: integer
+          title: Window Start
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+        reranker_model:
+          type: string
+          title: Reranker Model
+        explicit_call:
+          type: boolean
+          title: Explicit Call
+        event_count:
+          type: integer
+          title: Event Count
+        total_request_bytes:
+          type: integer
+          title: Total Request Bytes
+        total_reranker_tokens:
+          type: integer
+          title: Total Reranker Tokens
+        total_documents_reranked:
+          type: integer
+          title: Total Documents Reranked
+        total_time_taken_ms:
+          type: number
+          title: Total Time Taken Ms
+        total_reranking_time_ms:
+          type: number
+          title: Total Reranking Time Ms
       type: object
       required:
-      - all_time
-      - billing_cycle
-      title: UsageCountersResponse
-    UsageStats:
+      - window_start
+      - organization_id
+      - reranker_model
+      - explicit_call
+      - event_count
+      - total_request_bytes
+      - total_reranker_tokens
+      - total_documents_reranked
+      - total_time_taken_ms
+      - total_reranking_time_ms
+      title: RerankUsageResponse
+    ValidationError:
       properties:
-        docs:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ModelsUsageStats:
+      properties:
+        rerank:
           $ref: '#/components/schemas/UsageMetric'
-        ocr:
-          $ref: '#/components/schemas/UsageMetric'
-        indexed:
-          $ref: '#/components/schemas/UsageMetric'
-        queries:
+        embed:
           $ref: '#/components/schemas/UsageMetric'
       type: object
       required:
-      - docs
-      - ocr
-      - indexed
-      - queries
-      title: UsageStats
+      - rerank
+      - embed
+      title: ModelsUsageStats
     DocumentUsageResponse:
       properties:
         window_start:
@@ -355,55 +405,66 @@ components:
       - total_pages
       - total_time_taken_ms
       title: DocumentUsageResponse
-    ValidationError:
+    UsageStats:
       properties:
-        loc:
+        docs:
+          $ref: '#/components/schemas/UsageMetric'
+        ocr:
+          $ref: '#/components/schemas/UsageMetric'
+        indexed:
+          $ref: '#/components/schemas/UsageMetric'
+        queries:
+          $ref: '#/components/schemas/UsageMetric'
+      type: object
+      required:
+      - docs
+      - ocr
+      - indexed
+      - queries
+      title: UsageStats
+    DocumentEventEnum:
+      type: string
+      enum:
+      - added
+      - deleted
+      - parsed
+      - indexed
+      title: DocumentEventEnum
+    QueryEnum:
+      type: string
+      enum:
+      - fine
+      - coarse
+      - pages
+      - documents
+      title: QueryEnum
+    HTTPValidationError:
+      properties:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    UsageRequest:
+      title: HTTPValidationError
+    AggregationWindow:
+      type: string
+      enum:
+      - minutely
+      - hourly
+      - daily
+      title: AggregationWindow
+    ModelsUsageCountersResponse:
       properties:
-        start_time:
-          type: integer
-          title: Start Time
-          description: Start time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
-        end_time:
-          type: integer
-          title: End Time
-          description: End time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
-        aggregation_window:
-          allOf:
-          - $ref: '#/components/schemas/AggregationWindow'
-          description: 'Aggregation granularity: minutely, hourly, or daily'
-        collection_names:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Collection Names
-          description: Optional list of collection names to filter by. If None, returns data for all collections.
+        all_time:
+          $ref: '#/components/schemas/ModelsUsageStats'
+        billing_cycle:
+          $ref: '#/components/schemas/ModelsUsageStats'
       type: object
       required:
-      - start_time
-      - end_time
-      - aggregation_window
-      title: UsageRequest
+      - all_time
+      - billing_cycle
+      title: ModelsUsageCountersResponse
     EmbedUsageResponse:
       properties:
         window_start:
@@ -442,22 +503,6 @@ components:
       - total_request_tokens
       - total_time_taken_ms
       title: EmbedUsageResponse
-    QueryEnum:
-      type: string
-      enum:
-      - fine
-      - coarse
-      - pages
-      - documents
-      title: QueryEnum
-    DocumentEventEnum:
-      type: string
-      enum:
-      - added
-      - deleted
-      - parsed
-      - indexed
-      title: DocumentEventEnum
     UsageMetric:
       properties:
         count:
@@ -475,37 +520,17 @@ components:
       - bytes
       - billable_units
       title: UsageMetric
-    ModelsUsageStats:
-      properties:
-        rerank:
-          $ref: '#/components/schemas/UsageMetric'
-        embed:
-          $ref: '#/components/schemas/UsageMetric'
-      type: object
-      required:
-      - rerank
-      - embed
-      title: ModelsUsageStats
-    ModelsUsageCountersResponse:
+    UsageCountersResponse:
       properties:
         all_time:
-          $ref: '#/components/schemas/ModelsUsageStats'
+          $ref: '#/components/schemas/UsageStats'
         billing_cycle:
-          $ref: '#/components/schemas/ModelsUsageStats'
+          $ref: '#/components/schemas/UsageStats'
       type: object
       required:
       - all_time
       - billing_cycle
-      title: ModelsUsageCountersResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
+      title: UsageCountersResponse
     QueryUsageResponse:
       properties:
         window_start:
@@ -552,59 +577,34 @@ components:
       - total_results_returned
       - total_time_taken_ms
       title: QueryUsageResponse
-    AggregationWindow:
-      type: string
-      enum:
-      - minutely
-      - hourly
-      - daily
-      title: AggregationWindow
-    RerankUsageResponse:
+    UsageRequest:
       properties:
-        window_start:
+        start_time:
           type: integer
-          title: Window Start
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-        reranker_model:
-          type: string
-          title: Reranker Model
-        explicit_call:
-          type: boolean
-          title: Explicit Call
-        event_count:
+          title: Start Time
+          description: Start time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
+        end_time:
           type: integer
-          title: Event Count
-        total_request_bytes:
-          type: integer
-          title: Total Request Bytes
-        total_reranker_tokens:
-          type: integer
-          title: Total Reranker Tokens
-        total_documents_reranked:
-          type: integer
-          title: Total Documents Reranked
-        total_time_taken_ms:
-          type: number
-          title: Total Time Taken Ms
-        total_reranking_time_ms:
-          type: number
-          title: Total Reranking Time Ms
+          title: End Time
+          description: End time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
+        aggregation_window:
+          allOf:
+          - $ref: '#/components/schemas/AggregationWindow'
+          description: 'Aggregation granularity: minutely, hourly, or daily'
+        collection_names:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Collection Names
+          description: Optional list of collection names to filter by. If None, returns data for all collections.
       type: object
       required:
-      - window_start
-      - organization_id
-      - reranker_model
-      - explicit_call
-      - event_count
-      - total_request_bytes
-      - total_reranker_tokens
-      - total_documents_reranked
-      - total_time_taken_ms
-      - total_reranking_time_ms
-      title: RerankUsageResponse
+      - start_time
+      - end_time
+      - aggregation_window
+      title: UsageRequest
   securitySchemes:
     HTTPBearer:
       type: http
