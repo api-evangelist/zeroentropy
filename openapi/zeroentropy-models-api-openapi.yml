@@ -111,6 +111,66 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
+    RerankResult:
+      properties:
+        index:
+          type: integer
+          title: Index
+          description: The index of this document, relative to the original document array passed into the request.
+        relevance_score:
+          type: number
+          title: Relevance Score
+          description: The relevance score between this document and the query. This number will range between 0.0 and 1.0. This score is dependent on only the query and the scored document; other documents do not affect this score. This value is intended to be deterministic, but it may vary slightly due to floating point error.
+      type: object
+      required:
+      - index
+      - relevance_score
+      title: RerankResult
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    EmbedUsage:
+      properties:
+        total_bytes:
+          type: integer
+          title: Total Bytes
+          description: The total number of bytes in the request. This is used for ratelimiting.
+        total_tokens:
+          type: integer
+          title: Total Tokens
+          description: The total number of tokens in the request. This is used for billing.
+      type: object
+      required:
+      - total_bytes
+      - total_tokens
+      title: EmbedUsage
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     EmbedRequest:
       properties:
         model:
@@ -201,30 +261,20 @@ components:
       - e2e_latency
       - inference_latency
       title: RerankResponse
-    HTTPValidationError:
+    EmbedResult:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    EmbedUsage:
-      properties:
-        total_bytes:
-          type: integer
-          title: Total Bytes
-          description: The total number of bytes in the request. This is used for ratelimiting.
-        total_tokens:
-          type: integer
-          title: Total Tokens
-          description: The total number of tokens in the request. This is used for billing.
+        embedding:
+          anyOf:
+          - items:
+              type: number
+            type: array
+          - type: string
+          title: Embedding
+          description: The embedding of the input text, as an array of floats. If `base64` format is requested, the response will be an fp32 little endian byte array, encoded as a base64 string.
       type: object
       required:
-      - total_bytes
-      - total_tokens
-      title: EmbedUsage
+      - embedding
+      title: EmbedResult
     EmbedResponse:
       properties:
         results:
@@ -242,20 +292,6 @@ components:
       - results
       - usage
       title: EmbedResponse
-    EmbedResult:
-      properties:
-        embedding:
-          anyOf:
-          - items:
-              type: number
-            type: array
-          - type: string
-          title: Embedding
-          description: The embedding of the input text, as an array of floats. If `base64` format is requested, the response will be an fp32 little endian byte array, encoded as a base64 string.
-      type: object
-      required:
-      - embedding
-      title: EmbedResult
     RerankRequest:
       properties:
         model:
@@ -293,42 +329,6 @@ components:
       - query
       - documents
       title: RerankRequest
-    RerankResult:
-      properties:
-        index:
-          type: integer
-          title: Index
-          description: The index of this document, relative to the original document array passed into the request.
-        relevance_score:
-          type: number
-          title: Relevance Score
-          description: The relevance score between this document and the query. This number will range between 0.0 and 1.0. This score is dependent on only the query and the scored document; other documents do not affect this score. This value is intended to be deterministic, but it may vary slightly due to floating point error.
-      type: object
-      required:
-      - index
-      - relevance_score
-      title: RerankResult
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     HTTPBearer:
       type: http

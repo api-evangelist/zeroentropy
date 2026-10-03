@@ -138,6 +138,11 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    EmptyRequest:
+      x-stainless-empty-object: 'true'
+      properties: {}
+      type: object
+      title: EmptyRequest
     DefaultResponse:
       properties:
         message:
@@ -147,21 +152,6 @@ components:
           default: Success!
       type: object
       title: DefaultResponse
-    DeleteCollectionRequest:
-      properties:
-        collection_name:
-          type: string
-          title: Collection Name
-          description: The name of the collection to delete.
-      type: object
-      required:
-      - collection_name
-      title: DeleteCollectionRequest
-    EmptyRequest:
-      x-stainless-empty-object: 'true'
-      properties: {}
-      type: object
-      title: EmptyRequest
     AddCollectionRequest:
       properties:
         collection_name:
@@ -210,6 +200,16 @@ components:
       - msg
       - type
       title: ValidationError
+    DeleteCollectionRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection to delete.
+      type: object
+      required:
+      - collection_name
+      title: DeleteCollectionRequest
   securitySchemes:
     HTTPBearer:
       type: http
