@@ -136,156 +136,6 @@ paths:
       - HTTPBearer: []
 components:
   schemas:
-    TopSnippetsResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/SnippetResponse'
-          type: array
-          title: Results
-          description: The array of snippets returned by this endpoint. Each snippet result refers to a particular document path, and index range. Note that all documents, regardless of filetype, are converted into `UTF-8`-encoded strings. The `start_index` and `end_index` of a snippet refer to the range of characters in that string, that have been matched by this snippet.
-        document_results:
-          items:
-            $ref: '#/components/schemas/DocumentRetrievalResponse'
-          type: array
-          title: Document Results
-          description: The array of associated document information. Note how each snippet has an associated document path. After deduplicating the document paths, this array will contain document info for each document path that is referenced by at least one snippet result.
-      type: object
-      required:
-      - results
-      - document_results
-      title: TopSnippetsResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    StrJson:
-      anyOf:
-      - type: string
-      - items:
-          type: string
-        type: array
-      - items:
-          $ref: '#/components/schemas/StrJson'
-        type: array
-      - additionalProperties:
-          $ref: '#/components/schemas/StrJson'
-        type: object
-    TopPagesResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/PageRetrievalResponse'
-          type: array
-          title: Results
-        document_results:
-          items:
-            $ref: '#/components/schemas/DocumentRetrievalResponse'
-          type: array
-          title: Document Results
-          description: The array of associated document information. Note how each result page has an associated document path. After deduplicating the document paths, this array will contain document info for each document path that is referenced by at least one page result.
-      type: object
-      required:
-      - results
-      - document_results
-      title: TopPagesResponse
-    TopDocumentsResponse:
-      properties:
-        results:
-          items:
-            $ref: '#/components/schemas/DocumentRetrievalResponse'
-          type: array
-          title: Results
-      type: object
-      required:
-      - results
-      title: TopDocumentsResponse
-    PageRetrievalResponse:
-      properties:
-        path:
-          type: string
-          title: Path
-          description: The path of the document that this page comes from.
-        page_index:
-          type: integer
-          title: Page Index
-          description: The index of this page in the document. This field is 0-indexed. So, the 1st page has index 0, and the 2nd page has index 1.
-        score:
-          type: number
-          title: Score
-          description: The relevancy score assigned to this page.
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-          description: The contents of this page. This property will be null when `include_content` is `false`, and a string when `include_content` is `true`.
-        image_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Image Url
-          description: 'A URL to an image of the page. This field will only be provided if the document has finished parsing, and if it is a filetype that is capable of producing images (e.g. PDF, DOCX, PPT, etc). In all other cases, this field will be `null`.
-
-
-            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
-      type: object
-      required:
-      - path
-      - page_index
-      - score
-      - content
-      - image_url
-      title: PageRetrievalResponse
-      description: A Page's metadata.
-    TopPagesRequest:
-      properties:
-        collection_name:
-          type: string
-          title: Collection Name
-          description: The name of the collection.
-        query:
-          type: string
-          title: Query
-          description: The natural language query to search with. This cannot exceed 4096 UTF-8 bytes.
-        k:
-          type: integer
-          title: K
-          description: The number of pages to return. If there are not enough pages matching your filters, then fewer may be returned. This number must be between 1 and 1024, inclusive.
-        filter:
-          anyOf:
-          - $ref: '#/components/schemas/StrJson'
-          - type: 'null'
-          description: The query filter to apply. Please read [Metadata Filtering](/metadata-filtering) for more information. If not provided, then all documents will be searched.
-        include_content:
-          type: boolean
-          title: Include Content
-          description: If set to true, then the content of all pages will be returned.
-          default: false
-        include_metadata:
-          type: boolean
-          title: Include Metadata
-          description: Whether or not to include the document metadata in the response. If not provided, then the default will be `False`.
-          default: false
-        latency_mode:
-          type: string
-          enum:
-          - low
-          - high
-          title: Latency Mode
-          description: This option selects between our two latency modes. The higher latency mode takes longer, but can allow for more accurate responses. If desired, test both to customize your search experience for your particular use-case, or use the default of "low" and only swap if you need an additional improvement in search result quality.
-          default: low
-      type: object
-      required:
-      - collection_name
-      - query
-      - k
-      title: TopPagesRequest
     SnippetResponse:
       properties:
         path:
@@ -332,6 +182,18 @@ components:
 
 
         A snippet refers to a particular document path, and index range. Note that all documents, regardless of filetype, are converted into `UTF-8`-encoded strings. The `start_index` and `end_index` refer to the range of characters in that string, that have been matched by this snippet.'
+    StrJson:
+      anyOf:
+      - type: string
+      - items:
+          type: string
+        type: array
+      - items:
+          $ref: '#/components/schemas/StrJson'
+        type: array
+      - additionalProperties:
+          $ref: '#/components/schemas/StrJson'
+        type: object
     DocumentRetrievalResponse:
       properties:
         path:
@@ -361,35 +223,105 @@ components:
       - metadata
       - file_url
       title: DocumentRetrievalResponse
-    DocumentMetadataJson:
-      additionalProperties:
-        anyOf:
-        - type: string
-        - items:
-            type: string
-          type: array
-      type: object
-    ValidationError:
+    TopPagesResponse:
       properties:
-        loc:
+        results:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/PageRetrievalResponse'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Results
+        document_results:
+          items:
+            $ref: '#/components/schemas/DocumentRetrievalResponse'
+          type: array
+          title: Document Results
+          description: The array of associated document information. Note how each result page has an associated document path. After deduplicating the document paths, this array will contain document info for each document path that is referenced by at least one page result.
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - results
+      - document_results
+      title: TopPagesResponse
+    TopPagesRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        query:
+          type: string
+          title: Query
+          description: The natural language query to search with. This cannot exceed 4096 UTF-8 bytes.
+        k:
+          type: integer
+          title: K
+          description: The number of pages to return. If there are not enough pages matching your filters, then fewer may be returned. This number must be between 1 and 1024, inclusive.
+        filter:
+          anyOf:
+          - $ref: '#/components/schemas/StrJson'
+          - type: 'null'
+          description: The query filter to apply. Please read [Metadata Filtering](/metadata-filtering) for more information. If not provided, then all documents will be searched.
+        include_content:
+          type: boolean
+          title: Include Content
+          description: If set to true, then the content of all pages will be returned.
+          default: false
+        include_metadata:
+          type: boolean
+          title: Include Metadata
+          description: Whether or not to include the document metadata in the response. If not provided, then the default will be `False`.
+          default: false
+        latency_mode:
+          type: string
+          enum:
+          - low
+          - high
+          title: Latency Mode
+          description: This option selects between our two latency modes. The higher latency mode takes longer, but can allow for more accurate responses. If desired, test both to customize your search experience for your particular use-case, or use the default of "low" and only swap if you need an additional improvement in search result quality.
+          default: low
+      type: object
+      required:
+      - collection_name
+      - query
+      - k
+      title: TopPagesRequest
+    PageRetrievalResponse:
+      properties:
+        path:
+          type: string
+          title: Path
+          description: The path of the document that this page comes from.
+        page_index:
+          type: integer
+          title: Page Index
+          description: The index of this page in the document. This field is 0-indexed. So, the 1st page has index 0, and the 2nd page has index 1.
+        score:
+          type: number
+          title: Score
+          description: The relevancy score assigned to this page.
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: The contents of this page. This property will be null when `include_content` is `false`, and a string when `include_content` is `true`.
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+          description: 'A URL to an image of the page. This field will only be provided if the document has finished parsing, and if it is a filetype that is capable of producing images (e.g. PDF, DOCX, PPT, etc). In all other cases, this field will be `null`.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+      type: object
+      required:
+      - path
+      - page_index
+      - score
+      - content
+      - image_url
+      title: PageRetrievalResponse
+      description: A Page's metadata.
     TopSnippetsRequest:
       properties:
         collection_name:
@@ -431,6 +363,74 @@ components:
       - query
       - k
       title: TopSnippetsRequest
+    DocumentMetadataJson:
+      additionalProperties:
+        anyOf:
+        - type: string
+        - items:
+            type: string
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    TopDocumentsResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/DocumentRetrievalResponse'
+          type: array
+          title: Results
+      type: object
+      required:
+      - results
+      title: TopDocumentsResponse
+    TopSnippetsResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/SnippetResponse'
+          type: array
+          title: Results
+          description: The array of snippets returned by this endpoint. Each snippet result refers to a particular document path, and index range. Note that all documents, regardless of filetype, are converted into `UTF-8`-encoded strings. The `start_index` and `end_index` of a snippet refer to the range of characters in that string, that have been matched by this snippet.
+        document_results:
+          items:
+            $ref: '#/components/schemas/DocumentRetrievalResponse'
+          type: array
+          title: Document Results
+          description: The array of associated document information. Note how each snippet has an associated document path. After deduplicating the document paths, this array will contain document info for each document path that is referenced by at least one snippet result.
+      type: object
+      required:
+      - results
+      - document_results
+      title: TopSnippetsResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TopDocumentsRequest:
       properties:
         collection_name:

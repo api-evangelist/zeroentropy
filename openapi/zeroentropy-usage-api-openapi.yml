@@ -269,71 +269,23 @@ paths:
       x-hidden: true
 components:
   schemas:
-    ModelsUsageStats:
+    UsageMetric:
       properties:
-        rerank:
-          $ref: '#/components/schemas/UsageMetric'
-        embed:
-          $ref: '#/components/schemas/UsageMetric'
+        count:
+          type: integer
+          title: Count
+        bytes:
+          type: integer
+          title: Bytes
+        billable_units:
+          type: integer
+          title: Billable Units
       type: object
       required:
-      - rerank
-      - embed
-      title: ModelsUsageStats
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AggregationWindow:
-      type: string
-      enum:
-      - minutely
-      - hourly
-      - daily
-      title: AggregationWindow
-    EmbedUsageResponse:
-      properties:
-        window_start:
-          type: integer
-          title: Window Start
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-        embedding_model:
-          type: string
-          title: Embedding Model
-        explicit_call:
-          type: boolean
-          title: Explicit Call
-        event_count:
-          type: integer
-          title: Event Count
-        total_request_bytes:
-          type: integer
-          title: Total Request Bytes
-        total_request_tokens:
-          type: integer
-          title: Total Request Tokens
-        total_time_taken_ms:
-          type: number
-          title: Total Time Taken Ms
-      type: object
-      required:
-      - window_start
-      - organization_id
-      - embedding_model
-      - explicit_call
-      - event_count
-      - total_request_bytes
-      - total_request_tokens
-      - total_time_taken_ms
-      title: EmbedUsageResponse
+      - count
+      - bytes
+      - billable_units
+      title: UsageMetric
     ModelsUsageCountersResponse:
       properties:
         all_time:
@@ -345,7 +297,15 @@ components:
       - all_time
       - billing_cycle
       title: ModelsUsageCountersResponse
-    RerankUsageResponse:
+    QueryEnum:
+      type: string
+      enum:
+      - fine
+      - coarse
+      - pages
+      - documents
+      title: QueryEnum
+    QueryUsageResponse:
       properties:
         window_start:
           type: integer
@@ -354,71 +314,92 @@ components:
           type: string
           format: uuid
           title: Organization Id
-        reranker_model:
+        collection_id:
           type: string
-          title: Reranker Model
-        explicit_call:
-          type: boolean
-          title: Explicit Call
+          format: uuid
+          title: Collection Id
+        query_type:
+          $ref: '#/components/schemas/QueryEnum'
         event_count:
           type: integer
           title: Event Count
-        total_request_bytes:
+        total_query_bytes:
           type: integer
-          title: Total Request Bytes
-        total_reranker_tokens:
+          title: Total Query Bytes
+        total_queried_bytes:
           type: integer
-          title: Total Reranker Tokens
-        total_documents_reranked:
+          title: Total Queried Bytes
+        total_query_tokens:
           type: integer
-          title: Total Documents Reranked
+          title: Total Query Tokens
+        total_results_returned:
+          type: integer
+          title: Total Results Returned
         total_time_taken_ms:
           type: number
           title: Total Time Taken Ms
-        total_reranking_time_ms:
-          type: number
-          title: Total Reranking Time Ms
       type: object
       required:
       - window_start
       - organization_id
-      - reranker_model
-      - explicit_call
+      - collection_id
+      - query_type
       - event_count
-      - total_request_bytes
-      - total_reranker_tokens
-      - total_documents_reranked
+      - total_query_bytes
+      - total_queried_bytes
+      - total_query_tokens
+      - total_results_returned
       - total_time_taken_ms
-      - total_reranking_time_ms
-      title: RerankUsageResponse
-    UsageRequest:
+      title: QueryUsageResponse
+    UsageCountersResponse:
       properties:
-        start_time:
-          type: integer
-          title: Start Time
-          description: Start time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
-        end_time:
-          type: integer
-          title: End Time
-          description: End time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
-        aggregation_window:
-          allOf:
-          - $ref: '#/components/schemas/AggregationWindow'
-          description: 'Aggregation granularity: minutely, hourly, or daily'
-        collection_names:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Collection Names
-          description: Optional list of collection names to filter by. If None, returns data for all collections.
+        all_time:
+          $ref: '#/components/schemas/UsageStats'
+        billing_cycle:
+          $ref: '#/components/schemas/UsageStats'
       type: object
       required:
-      - start_time
-      - end_time
-      - aggregation_window
-      title: UsageRequest
+      - all_time
+      - billing_cycle
+      title: UsageCountersResponse
+    UsageStats:
+      properties:
+        docs:
+          $ref: '#/components/schemas/UsageMetric'
+        ocr:
+          $ref: '#/components/schemas/UsageMetric'
+        indexed:
+          $ref: '#/components/schemas/UsageMetric'
+        queries:
+          $ref: '#/components/schemas/UsageMetric'
+      type: object
+      required:
+      - docs
+      - ocr
+      - indexed
+      - queries
+      title: UsageStats
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     DocumentUsageResponse:
       properties:
         window_start:
@@ -477,69 +458,6 @@ components:
       - total_pages
       - total_time_taken_ms
       title: DocumentUsageResponse
-    QueryUsageResponse:
-      properties:
-        window_start:
-          type: integer
-          title: Window Start
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        query_type:
-          $ref: '#/components/schemas/QueryEnum'
-        event_count:
-          type: integer
-          title: Event Count
-        total_query_bytes:
-          type: integer
-          title: Total Query Bytes
-        total_queried_bytes:
-          type: integer
-          title: Total Queried Bytes
-        total_query_tokens:
-          type: integer
-          title: Total Query Tokens
-        total_results_returned:
-          type: integer
-          title: Total Results Returned
-        total_time_taken_ms:
-          type: number
-          title: Total Time Taken Ms
-      type: object
-      required:
-      - window_start
-      - organization_id
-      - collection_id
-      - query_type
-      - event_count
-      - total_query_bytes
-      - total_queried_bytes
-      - total_query_tokens
-      - total_results_returned
-      - total_time_taken_ms
-      title: QueryUsageResponse
-    UsageStats:
-      properties:
-        docs:
-          $ref: '#/components/schemas/UsageMetric'
-        ocr:
-          $ref: '#/components/schemas/UsageMetric'
-        indexed:
-          $ref: '#/components/schemas/UsageMetric'
-        queries:
-          $ref: '#/components/schemas/UsageMetric'
-      type: object
-      required:
-      - docs
-      - ocr
-      - indexed
-      - queries
-      title: UsageStats
     DocumentEventEnum:
       type: string
       enum:
@@ -548,63 +466,145 @@ components:
       - parsed
       - indexed
       title: DocumentEventEnum
-    ValidationError:
+    HTTPValidationError:
       properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    UsageCountersResponse:
+      title: HTTPValidationError
+    UsageRequest:
       properties:
-        all_time:
-          $ref: '#/components/schemas/UsageStats'
-        billing_cycle:
-          $ref: '#/components/schemas/UsageStats'
+        start_time:
+          type: integer
+          title: Start Time
+          description: Start time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
+        end_time:
+          type: integer
+          title: End Time
+          description: End time for the usage query (inclusive) - Unix timestamp (seconds since epoch)
+        aggregation_window:
+          allOf:
+          - $ref: '#/components/schemas/AggregationWindow'
+          description: 'Aggregation granularity: minutely, hourly, or daily'
+        collection_names:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Collection Names
+          description: Optional list of collection names to filter by. If None, returns data for all collections.
       type: object
       required:
-      - all_time
-      - billing_cycle
-      title: UsageCountersResponse
-    QueryEnum:
+      - start_time
+      - end_time
+      - aggregation_window
+      title: UsageRequest
+    RerankUsageResponse:
+      properties:
+        window_start:
+          type: integer
+          title: Window Start
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+        reranker_model:
+          type: string
+          title: Reranker Model
+        explicit_call:
+          type: boolean
+          title: Explicit Call
+        event_count:
+          type: integer
+          title: Event Count
+        total_request_bytes:
+          type: integer
+          title: Total Request Bytes
+        total_reranker_tokens:
+          type: integer
+          title: Total Reranker Tokens
+        total_documents_reranked:
+          type: integer
+          title: Total Documents Reranked
+        total_time_taken_ms:
+          type: number
+          title: Total Time Taken Ms
+        total_reranking_time_ms:
+          type: number
+          title: Total Reranking Time Ms
+      type: object
+      required:
+      - window_start
+      - organization_id
+      - reranker_model
+      - explicit_call
+      - event_count
+      - total_request_bytes
+      - total_reranker_tokens
+      - total_documents_reranked
+      - total_time_taken_ms
+      - total_reranking_time_ms
+      title: RerankUsageResponse
+    ModelsUsageStats:
+      properties:
+        rerank:
+          $ref: '#/components/schemas/UsageMetric'
+        embed:
+          $ref: '#/components/schemas/UsageMetric'
+      type: object
+      required:
+      - rerank
+      - embed
+      title: ModelsUsageStats
+    AggregationWindow:
       type: string
       enum:
-      - fine
-      - coarse
-      - pages
-      - documents
-      title: QueryEnum
-    UsageMetric:
+      - minutely
+      - hourly
+      - daily
+      title: AggregationWindow
+    EmbedUsageResponse:
       properties:
-        count:
+        window_start:
           type: integer
-          title: Count
-        bytes:
+          title: Window Start
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+        embedding_model:
+          type: string
+          title: Embedding Model
+        explicit_call:
+          type: boolean
+          title: Explicit Call
+        event_count:
           type: integer
-          title: Bytes
-        billable_units:
+          title: Event Count
+        total_request_bytes:
           type: integer
-          title: Billable Units
+          title: Total Request Bytes
+        total_request_tokens:
+          type: integer
+          title: Total Request Tokens
+        total_time_taken_ms:
+          type: number
+          title: Total Time Taken Ms
       type: object
       required:
-      - count
-      - bytes
-      - billable_units
-      title: UsageMetric
+      - window_start
+      - organization_id
+      - embedding_model
+      - explicit_call
+      - event_count
+      - total_request_bytes
+      - total_request_tokens
+      - total_time_taken_ms
+      title: EmbedUsageResponse
   securitySchemes:
     HTTPBearer:
       type: http
