@@ -233,6 +233,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Plans
+  url: plans/zeroentropy-plans-pricing.yml
 - type: CapabilityMap
   url: capabilities/zeroentropy-capability-edges.yml
   name: ZeroEntropy Business Capability Map
