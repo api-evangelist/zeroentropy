@@ -1,0 +1,105 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-07'
+method: searched
+source: https://www.zeroentropy.dev/pricing
+sources:
+- https://www.zeroentropy.dev/pricing
+provenance:
+  tool: all/0-working/economics/harvest_pricing.py
+  run: 20261007T104522
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: per-call
+delivery:
+  delivery: managed+licensed
+  method: page
+  read: '2026-10-07'
+  evidence: Model licensing and deployment
+  managed_tier: Pay-As-You-Go
+published: true
+note: Model and Search API usage pricing published; on-prem licensing and Enterprise are contact-us.
+plan_count: 5
+currency: USD
+plans:
+- name: zerank-2
+  price_text: $0.025 / MM Tokens
+  price: 0.025
+  currency: USD
+  period: per-use
+  unit: MM tokens
+  included_quota: Weights available on HuggingFace; Self-serve with Slack community support
+- name: zembed-1
+  price_text: $0.050 / MM Tokens
+  price: 0.05
+  currency: USD
+  period: per-use
+  unit: MM tokens
+  included_quota: State-of-the-art embedding model; Weights available upon request; White glove fine-tuning
+    and evaluation
+- name: ze on-prem
+  price_text: Contact Us
+  period: none
+  included_quota: Model licensing and deployment; White glove and priority support; Optional evaluations
+    and fine-tuning
+- name: Search API Pay-As-You-Go
+  price_text: 'OCR: $1.75 / 1,000 pages'
+  price: 1.75
+  currency: USD
+  period: per-use
+  unit: 1,000 pages
+  included_quota: 'Indexing: $0.50 / MB; Storage: $0.10 / MB / month; Queries: $1.50 / TB queried; Reranking:
+    $0.025 / MM tokens; Embeddings: $0.05 / MM tokens'
+- name: Enterprise
+  price_text: Contact Us
+  period: none
+  included_quota: Volume discounts; On-premises deployment within your VPC; 99.99% SLA; White-glove onboarding
+rate_limit_statements:
+- 'Ratelimits: 2,500,000 UTF-8 bytes per minute'
+- Pre-pay for higher ratelimits.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - subscription
+  units:
+  - token
+  plans:
+  - name: zerank-2
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - token
+    periods:
+    - other
+  - name: zembed-1
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - token
+    periods:
+    - other
+  - name: ze on-prem
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Search API Pay-As-You-Go
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Enterprise
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
