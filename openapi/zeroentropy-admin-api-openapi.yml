@@ -264,17 +264,49 @@ paths:
       x-hidden: true
 components:
   schemas:
-    CreateOrganizationRequest:
+    UpdateOrganizationRequest:
       properties:
         organization_id:
           type: string
           format: uuid
           title: Organization Id
-          description: The organization id to create. Must be unique.
+          description: The organization ID to update.
+        subscription_tier:
+          anyOf:
+          - $ref: '#/components/schemas/SubscriptionType'
+          - type: 'null'
+          description: Subscription tier to set.
+        override_bpm_fast:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Override Bpm Fast
+          description: 'Admin override: bytes per minute limit with latency: fast. Set to 0 to disable.'
+        override_bpm_slow:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Override Bpm Slow
+          description: 'Admin override: bytes per minute limit with latency: slow. Set to 0 to disable.'
+        override_max_bytes_per_request:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Override Max Bytes Per Request
+          description: 'Admin override: max bytes per request. Set to 0 to disable.'
+        zdr:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zdr
+          description: Whether zero data retention should be enabled.
       type: object
       required:
       - organization_id
-      title: CreateOrganizationRequest
+      title: UpdateOrganizationRequest
     DeleteAPIKeyRequest:
       properties:
         organization_id:
@@ -292,14 +324,15 @@ components:
       - organization_id
       - api_key_id
       title: DeleteAPIKeyRequest
-    SubscriptionType:
-      type: string
-      enum:
-      - free
-      - starter
-      - teams
-      - enterprise
-      title: SubscriptionType
+    DefaultResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: This string will always be "Success!". This may change in the future.
+          default: Success!
+      type: object
+      title: DefaultResponse
     APIKeyInfo:
       properties:
         id:
@@ -339,6 +372,14 @@ components:
       - created_by
       - api_key
       title: APIKeyInfo
+    SubscriptionType:
+      type: string
+      enum:
+      - free
+      - starter
+      - teams
+      - enterprise
+      title: SubscriptionType
     ListAPIKeysRequest:
       properties:
         organization_id:
@@ -350,27 +391,6 @@ components:
       required:
       - organization_id
       title: ListAPIKeysRequest
-    GetOrganizationRequest:
-      properties:
-        organization_id:
-          type: string
-          format: uuid
-          title: Organization Id
-          description: The organization ID to retrieve.
-      type: object
-      required:
-      - organization_id
-      title: GetOrganizationRequest
-    AddAPIKeyResponse:
-      properties:
-        api_key:
-          type: string
-          title: Api Key
-          description: The generated API key.
-      type: object
-      required:
-      - api_key
-      title: AddAPIKeyResponse
     UpdateAPIKeyRequest:
       properties:
         organization_id:
@@ -399,54 +419,23 @@ components:
       - organization_id
       - api_key_id
       title: UpdateAPIKeyRequest
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AddAPIKeyRequest:
+    DBAPIKeyPermission:
+      type: string
+      enum:
+      - all
+      - read_only
+      title: DBAPIKeyPermission
+    GetOrganizationRequest:
       properties:
         organization_id:
           type: string
           format: uuid
           title: Organization Id
-          description: The organization ID to create the API key for.
-        name:
-          type: string
-          title: Name
-          description: A descriptive name for this API key.
-        permission:
-          allOf:
-          - $ref: '#/components/schemas/DBAPIKeyPermission'
-          description: The permission level for this API key.
-        created_by:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Created By
-          description: Who created this API key.
+          description: The organization ID to retrieve.
       type: object
       required:
       - organization_id
-      - name
-      - permission
-      title: AddAPIKeyRequest
+      title: GetOrganizationRequest
     HTTPValidationError:
       properties:
         detail:
@@ -456,24 +445,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    DBAPIKeyPermission:
-      type: string
-      enum:
-      - all
-      - read_only
-      title: DBAPIKeyPermission
-    ListAPIKeysResponse:
-      properties:
-        api_keys:
-          items:
-            $ref: '#/components/schemas/APIKeyInfo'
-          type: array
-          title: Api Keys
-          description: The list of API keys associated with this organization.
-      type: object
-      required:
-      - api_keys
-      title: ListAPIKeysResponse
     GetOrganizationResponse:
       properties:
         organization_id:
@@ -521,58 +492,87 @@ components:
       - override_max_bytes_per_request
       - zdr
       title: GetOrganizationResponse
-    UpdateOrganizationRequest:
+    ListAPIKeysResponse:
+      properties:
+        api_keys:
+          items:
+            $ref: '#/components/schemas/APIKeyInfo'
+          type: array
+          title: Api Keys
+          description: The list of API keys associated with this organization.
+      type: object
+      required:
+      - api_keys
+      title: ListAPIKeysResponse
+    AddAPIKeyResponse:
+      properties:
+        api_key:
+          type: string
+          title: Api Key
+          description: The generated API key.
+      type: object
+      required:
+      - api_key
+      title: AddAPIKeyResponse
+    AddAPIKeyRequest:
       properties:
         organization_id:
           type: string
           format: uuid
           title: Organization Id
-          description: The organization ID to update.
-        subscription_tier:
+          description: The organization ID to create the API key for.
+        name:
+          type: string
+          title: Name
+          description: A descriptive name for this API key.
+        permission:
+          allOf:
+          - $ref: '#/components/schemas/DBAPIKeyPermission'
+          description: The permission level for this API key.
+        created_by:
           anyOf:
-          - $ref: '#/components/schemas/SubscriptionType'
+          - type: string
           - type: 'null'
-          description: Subscription tier to set.
-        override_bpm_fast:
-          anyOf:
-          - type: integer
-            minimum: 0.0
-          - type: 'null'
-          title: Override Bpm Fast
-          description: 'Admin override: bytes per minute limit with latency: fast. Set to 0 to disable.'
-        override_bpm_slow:
-          anyOf:
-          - type: integer
-            minimum: 0.0
-          - type: 'null'
-          title: Override Bpm Slow
-          description: 'Admin override: bytes per minute limit with latency: slow. Set to 0 to disable.'
-        override_max_bytes_per_request:
-          anyOf:
-          - type: integer
-            minimum: 0.0
-          - type: 'null'
-          title: Override Max Bytes Per Request
-          description: 'Admin override: max bytes per request. Set to 0 to disable.'
-        zdr:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Zdr
-          description: Whether zero data retention should be enabled.
+          title: Created By
+          description: Who created this API key.
       type: object
       required:
       - organization_id
-      title: UpdateOrganizationRequest
-    DefaultResponse:
+      - name
+      - permission
+      title: AddAPIKeyRequest
+    ValidationError:
       properties:
-        message:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
           title: Message
-          description: This string will always be "Success!". This may change in the future.
-          default: Success!
+        type:
+          type: string
+          title: Error Type
       type: object
-      title: DefaultResponse
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CreateOrganizationRequest:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          description: The organization id to create. Must be unique.
+      type: object
+      required:
+      - organization_id
+      title: CreateOrganizationRequest
   securitySchemes:
     HTTPBearer:
       type: http

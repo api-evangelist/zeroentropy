@@ -384,53 +384,65 @@ paths:
       x-hidden: true
 components:
   schemas:
-    GetDocumentInfoRequest:
+    DocumentResponse:
       properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
         collection_name:
           type: string
           title: Collection Name
-          description: The name of the collection.
         path:
           type: string
           title: Path
-          description: The filepath of the document that you're requesting. A `404 Not Found` status code will be returned if no document with this path was found.
-        include_content:
-          type: boolean
-          title: Include Content
-          description: If `true`, then the document response will have the `content` attribute be a `string`, rather than `null`. This string will contain the full contents of the document.
-          default: false
+        metadata:
+          $ref: '#/components/schemas/DocumentMetadataJson'
+        index_status:
+          $ref: '#/components/schemas/DocumentIndexStatus'
+        size:
+          type: integer
+          title: Size
+          description: The total size of the raw document data, in bytes.
+        num_pages:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Num Pages
+          description: The number of pages in this document. This will be `null` if the document is parsing or failed to parse. It can also be `null` if the document is a filetype that does not support pages.
+        file_url:
+          type: string
+          title: File Url
+          description: 'A URL to the document data, which can be used to download the raw document content or to display the document in frontend applications.
+
+
+            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: This will be `null`, unless `include_content` was available and set to `true`.
       type: object
       required:
+      - id
       - collection_name
       - path
-      title: GetDocumentInfoRequest
-    GetDocumentInfoListRequest:
+      - metadata
+      - index_status
+      - size
+      - num_pages
+      - file_url
+      title: DocumentResponse
+    HTTPValidationError:
       properties:
-        collection_name:
-          type: string
-          title: Collection Name
-          description: The name of the collection.
-        limit:
-          type: integer
-          title: Limit
-          description: The maximum number of documents to return. This field is by default 1024, and cannot be set larger than 1024
-          default: 1024
-        path_prefix:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Path Prefix
-          description: All documents returned will have a path that starts with the provided path prefix.
-        path_gt:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Path Gt
-          description: All documents returned will have a path strictly greater than the provided `path_gt` argument. (Comparison will be based on lexicographic comparison. It is guaranteed that two strings are lexicographically equal if and only if they have identical binary representations.).
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - collection_name
-      title: GetDocumentInfoListRequest
+      title: HTTPValidationError
     DocumentIndexStatus:
       type: string
       enum:
@@ -442,32 +454,6 @@ components:
       - parsing_failed
       - indexing_failed
       title: DocumentIndexStatus
-    APIBinaryDocument:
-      properties:
-        type:
-          type: string
-          enum:
-          - auto
-          const: auto
-          title: Type
-          description: When this is set to `auto`, then the file extension and binary data will be used to deduce a filetype automatically. Currently, only `auto` is supported.
-        base64_data:
-          type: string
-          title: Base64 Data
-          description: The file's raw data, as a base64-encoded string
-      type: object
-      required:
-      - type
-      - base64_data
-      title: APIBinaryDocument
-    DocumentMetadataJson:
-      additionalProperties:
-        anyOf:
-        - type: string
-        - items:
-            type: string
-          type: array
-      type: object
     APITextPagesDocument:
       properties:
         type:
@@ -537,17 +523,51 @@ components:
       - num_pages
       - file_url
       title: DocumentMetadataResponse
-    GetDocumentInfoListResponse:
+    DeleteDocumentResponse:
       properties:
-        documents:
+        deleted_paths:
           items:
-            $ref: '#/components/schemas/DocumentMetadataResponse'
+            type: string
           type: array
-          title: Documents
+          title: Deleted Paths
       type: object
       required:
-      - documents
-      title: GetDocumentInfoListResponse
+      - deleted_paths
+      title: DeleteDocumentResponse
+    APIBinaryDocument:
+      properties:
+        type:
+          type: string
+          enum:
+          - auto
+          const: auto
+          title: Type
+          description: When this is set to `auto`, then the file extension and binary data will be used to deduce a filetype automatically. Currently, only `auto` is supported.
+        base64_data:
+          type: string
+          title: Base64 Data
+          description: The file's raw data, as a base64-encoded string
+      type: object
+      required:
+      - type
+      - base64_data
+      title: APIBinaryDocument
+    GetDocumentInfoResponse:
+      properties:
+        document:
+          $ref: '#/components/schemas/DocumentResponse'
+      type: object
+      required:
+      - document
+      title: GetDocumentInfoResponse
+    DocumentMetadataJson:
+      additionalProperties:
+        anyOf:
+        - type: string
+        - items:
+            type: string
+          type: array
+      type: object
     GetPageInfoResponse:
       properties:
         page:
@@ -574,23 +594,6 @@ components:
       - type
       - text
       title: APITextDocument
-    GetDocumentInfoResponse:
-      properties:
-        document:
-          $ref: '#/components/schemas/DocumentResponse'
-      type: object
-      required:
-      - document
-      title: GetDocumentInfoResponse
-    DefaultResponse:
-      properties:
-        message:
-          type: string
-          title: Message
-          description: This string will always be "Success!". This may change in the future.
-          default: Success!
-      type: object
-      title: DefaultResponse
     DeleteDocumentRequest:
       properties:
         collection_name:
@@ -610,85 +613,6 @@ components:
       - collection_name
       - path
       title: DeleteDocumentRequest
-    UpdateDocumentRequest:
-      properties:
-        collection_name:
-          type: string
-          title: Collection Name
-          description: The name of the collection.
-        path:
-          type: string
-          title: Path
-          description: The filepath of the document that you are updating. A `404 Not Found` status code will be returned if no document with this path was found.
-        metadata:
-          anyOf:
-          - $ref: '#/components/schemas/DocumentMetadataJson'
-          - type: 'null'
-          description: If this field is provided, the given metadata json will replace the document's existing metadata json. In other words, if you want to add a new field, you will need to provide the entire metadata object (Both the original fields, and the new field).
-        index_status:
-          anyOf:
-          - type: string
-            enum:
-            - not_parsed
-            - not_indexed
-          - type: 'null'
-          title: Index Status
-          description: If the document is in the index_status of `parsing_failed or `indexing_failed`, then this endpoint allows you to update the index status to `not_parsed` and `not_indexed`, respectively. This allows the document to re-attempt to parse/index after failure.
-      type: object
-      required:
-      - collection_name
-      - path
-      title: UpdateDocumentRequest
-    DocumentResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        collection_name:
-          type: string
-          title: Collection Name
-        path:
-          type: string
-          title: Path
-        metadata:
-          $ref: '#/components/schemas/DocumentMetadataJson'
-        index_status:
-          $ref: '#/components/schemas/DocumentIndexStatus'
-        size:
-          type: integer
-          title: Size
-          description: The total size of the raw document data, in bytes.
-        num_pages:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Num Pages
-          description: The number of pages in this document. This will be `null` if the document is parsing or failed to parse. It can also be `null` if the document is a filetype that does not support pages.
-        file_url:
-          type: string
-          title: File Url
-          description: 'A URL to the document data, which can be used to download the raw document content or to display the document in frontend applications.
-
-
-            NOTE: If a `/documents/update-document` call returned a new document id, then this url will be invalidated and must be retrieved again.'
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-          description: This will be `null`, unless `include_content` was available and set to `true`.
-      type: object
-      required:
-      - id
-      - collection_name
-      - path
-      - metadata
-      - index_status
-      - size
-      - num_pages
-      - file_url
-      title: DocumentResponse
     PageResponse:
       properties:
         id:
@@ -730,72 +654,17 @@ components:
       - page_index
       - image_url
       title: PageResponse
-    DeleteDocumentResponse:
+    GetDocumentInfoListResponse:
       properties:
-        deleted_paths:
+        documents:
           items:
-            type: string
+            $ref: '#/components/schemas/DocumentMetadataResponse'
           type: array
-          title: Deleted Paths
+          title: Documents
       type: object
       required:
-      - deleted_paths
-      title: DeleteDocumentResponse
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    GetPageInfoRequest:
-      properties:
-        collection_name:
-          type: string
-          title: Collection Name
-          description: The name of the collection.
-        path:
-          type: string
-          title: Path
-          description: The filepath of the document whose page you are requesting. A `404 Not Found` status code will be returned if no document with this path was found.
-        page_index:
-          type: integer
-          title: Page Index
-          description: 'The specific page index whose info is being requested. Pages are 0-indexed, so that the 1st page of a PDF is of page index 0. You may use the `num_pages` attribute of `/documents/get-document-info` or `/documents/get-document-info-list` to know what the range of valid indices are. A `404 Not Found` status code will be returned if no such page index exists. '
-        include_content:
-          type: boolean
-          title: Include Content
-          description: If `true`, then the response will have the `content` attribute be a `string`, rather than `null`. This string will contain the full contents of the page.
-          default: false
-      type: object
-      required:
-      - collection_name
-      - path
-      - page_index
-      title: GetPageInfoRequest
+      - documents
+      title: GetDocumentInfoListResponse
     AddDocumentRequest:
       properties:
         collection_name:
@@ -839,6 +708,137 @@ components:
       - path
       - content
       title: AddDocumentRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DefaultResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: This string will always be "Success!". This may change in the future.
+          default: Success!
+      type: object
+      title: DefaultResponse
+    GetDocumentInfoRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document that you're requesting. A `404 Not Found` status code will be returned if no document with this path was found.
+        include_content:
+          type: boolean
+          title: Include Content
+          description: If `true`, then the document response will have the `content` attribute be a `string`, rather than `null`. This string will contain the full contents of the document.
+          default: false
+      type: object
+      required:
+      - collection_name
+      - path
+      title: GetDocumentInfoRequest
+    GetPageInfoRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document whose page you are requesting. A `404 Not Found` status code will be returned if no document with this path was found.
+        page_index:
+          type: integer
+          title: Page Index
+          description: 'The specific page index whose info is being requested. Pages are 0-indexed, so that the 1st page of a PDF is of page index 0. You may use the `num_pages` attribute of `/documents/get-document-info` or `/documents/get-document-info-list` to know what the range of valid indices are. A `404 Not Found` status code will be returned if no such page index exists. '
+        include_content:
+          type: boolean
+          title: Include Content
+          description: If `true`, then the response will have the `content` attribute be a `string`, rather than `null`. This string will contain the full contents of the page.
+          default: false
+      type: object
+      required:
+      - collection_name
+      - path
+      - page_index
+      title: GetPageInfoRequest
+    UpdateDocumentRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        path:
+          type: string
+          title: Path
+          description: The filepath of the document that you are updating. A `404 Not Found` status code will be returned if no document with this path was found.
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/DocumentMetadataJson'
+          - type: 'null'
+          description: If this field is provided, the given metadata json will replace the document's existing metadata json. In other words, if you want to add a new field, you will need to provide the entire metadata object (Both the original fields, and the new field).
+        index_status:
+          anyOf:
+          - type: string
+            enum:
+            - not_parsed
+            - not_indexed
+          - type: 'null'
+          title: Index Status
+          description: If the document is in the index_status of `parsing_failed or `indexing_failed`, then this endpoint allows you to update the index status to `not_parsed` and `not_indexed`, respectively. This allows the document to re-attempt to parse/index after failure.
+      type: object
+      required:
+      - collection_name
+      - path
+      title: UpdateDocumentRequest
+    GetDocumentInfoListRequest:
+      properties:
+        collection_name:
+          type: string
+          title: Collection Name
+          description: The name of the collection.
+        limit:
+          type: integer
+          title: Limit
+          description: The maximum number of documents to return. This field is by default 1024, and cannot be set larger than 1024
+          default: 1024
+        path_prefix:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Path Prefix
+          description: All documents returned will have a path that starts with the provided path prefix.
+        path_gt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Path Gt
+          description: All documents returned will have a path strictly greater than the provided `path_gt` argument. (Comparison will be based on lexicographic comparison. It is guaranteed that two strings are lexicographically equal if and only if they have identical binary representations.).
+      type: object
+      required:
+      - collection_name
+      title: GetDocumentInfoListRequest
   securitySchemes:
     HTTPBearer:
       type: http
