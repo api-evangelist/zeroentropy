@@ -337,3 +337,9 @@ components:
 
         You can get your API Key at the [Dashboard](https://dashboard.zeroentropy.dev/)!'
       scheme: bearer
+x-provenance:
+  method: harvested
+  publisher: ZeroEntropy
+  source: https://docs.zeroentropy.dev/api-reference/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
